@@ -74,6 +74,7 @@ tr.off td{color:var(--mu);text-decoration:line-through}tr.off td:last-child{text
 @media(max-width:520px){.nc{padding:18px 12px 22px;border-radius:28px}.nc .nh{font-size:27px}.nc .ns{font-size:13px}.nc th,.nc td{padding:9px 8px;font-size:13px}.nc th:first-child,.nc td:first-child{width:75%}}
 .gd p,.gd li{font-size:14px;margin:4px 0}.gd table{margin:6px 0}
 #nIn input[readonly]{opacity:.7}
+.unkrow{border:1px solid var(--bd);border-radius:9px;padding:8px 10px;margin:8px 0}.unkrow>label:first-child{font-weight:700;color:var(--tx);margin-top:0}.unkrow .chk{font-size:13px;margin:5px 0 0}.unkrow input:disabled{opacity:.55}
 .cov{border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:14px;border:1px solid var(--bd)}.cov.bad{border-color:var(--ac);color:var(--ac)}.cov.ok{color:#2e7d4f}.sg{padding:2px 8px;margin:0 0 0 6px;font-size:12px}.okc{color:#2e7d4f}.xc{color:var(--ac)}
 .ad{margin:5px 0;font-size:14px}.ad.w{color:var(--ac)}.ad button{padding:2px 9px;font-size:12px;margin:0 0 0 6px}#compTxt{min-height:70px}
 .fda{background:#fff;color:#000;border:2px solid #000;padding:6px 10px;max-width:340px;font:14px/1.3 Helvetica,Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;margin:10px 0}
@@ -125,6 +126,59 @@ th{background:var(--soft)}td,th{padding:9px 10px}
 .tip button{margin:0}
 .eg th,.eg td{font-size:14px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== 가독성 개선: 정보 위계·간격·입력/표 대비 ===== */
+:root{--bg:#f4f6f4;--card:#ffffff;--tx:#18231d;--mu:#53635a;--ac:#176b46;--bd:#d4ded7;--soft:#e8f2eb;--on:#fff}
+body{font-size:16px;line-height:1.65;letter-spacing:-.01em}
+main{max-width:1320px;padding:30px clamp(14px,2.5vw,32px) 84px}
+.head{margin-bottom:20px}
+h1{font-size:clamp(28px,3vw,36px);font-weight:800;letter-spacing:-.035em}
+h2{font-size:19px;line-height:1.4;font-weight:750;margin-bottom:12px}
+.sub{font-size:16px;line-height:1.65}
+.how{gap:12px;margin:20px 0 24px}
+.how li{background:var(--card);border:1px solid var(--bd);box-shadow:0 2px 8px rgba(20,45,30,.04);padding:14px 16px;line-height:1.5}
+.tabs{gap:10px;margin-bottom:20px}
+.tabs button{min-height:78px;padding:14px 16px;box-shadow:0 2px 8px rgba(20,45,30,.04);transition:border-color .15s,background .15s}
+.tabs button b{font-size:17px;font-weight:750}
+.tabs button small{font-size:13px;line-height:1.45}
+section,details{padding:20px 22px;border-radius:14px;box-shadow:0 2px 10px rgba(20,45,30,.035)}
+.lay{gap:20px;grid-template-columns:minmax(290px,350px) minmax(0,1fr)}
+.lay.w{grid-template-columns:minmax(340px,430px) minmax(0,1fr)}
+.side.st{top:16px}
+label{font-size:14px;font-weight:650;color:var(--tx);margin:12px 0 5px}
+.msg,.intro{font-size:14px;line-height:1.65;color:var(--mu)}
+textarea,select,input.t{background:#fff;color:#17231c;border-color:#c5d2c9}
+textarea{line-height:1.65;min-height:210px}
+textarea::placeholder,input::placeholder{color:#7b8980;opacity:1}
+.chk{gap:10px;line-height:1.5}
+button{font-size:15px;letter-spacing:0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+button.g{box-shadow:none}
+.drop{margin-bottom:14px;border-style:dashed;border-width:2px}
+.drop b{font-size:19px}
+.drop span{line-height:1.65}
+.tw{border:1px solid var(--bd);border-radius:10px;background:var(--card)}
+.tw table{min-width:560px}
+table{font-size:14px;line-height:1.5}
+th{font-weight:750;color:#24352b;background:#eaf2ec}
+td,th{padding:11px 12px;border-bottom:1px solid #dce5de}
+tbody tr:nth-child(even){background:#f8faf8}
+tr:hover td{background:#f0f6f1}
+tr.off td{color:#77837b}
+.tip{background:#edf6ef;border-color:#c7dfce;padding:14px 16px;line-height:1.6}
+.ph{border-radius:16px;padding:36px 30px;line-height:1.7}
+.ph h2{font-size:22px}
+.cov{font-size:15px;line-height:1.6;padding:13px 16px}
+.unkrow{padding:12px 14px;background:#fafcfb}
+.unkrow>label:first-child{font-size:15px}
+.nc{max-width:560px;box-shadow:5px 0 0 #d5b47a}
+.nc .nh{font-size:32px}
+.nc th,.nc td{font-size:16px;padding:11px 13px;line-height:1.45}
+.nc th{font-size:15px}
+.fda{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+@media(max-width:900px){main{padding:20px 14px 56px}.lay,.lay.w{grid-template-columns:minmax(0,1fr)}.side.st{position:static}.cols2{grid-template-columns:1fr}}
+@media(max-width:700px){.tabs{grid-template-columns:1fr 1fr}.tabs button{min-height:74px;padding:11px 12px}.tabs button b{font-size:16px}.tabs button small{font-size:12px}section,details{padding:16px}.how li{flex-basis:100%}.nc{max-width:100%}}
+@media(max-width:420px){h1{font-size:27px}.tabs{gap:7px}.tabs button{min-height:70px}.nc .nh{font-size:27px}.nc th,.nc td{font-size:13px;padding:9px 7px}}
+
 </style>
 </head>
 <body>
@@ -143,7 +197,6 @@ th{background:var(--soft)}td,th{padding:9px 10px}
 <label class="chk"><input type="checkbox" id="sort" checked>배합비 많은 순으로 정렬</label>
 <label class="chk"><input type="checkbox" id="alg" checked>알레르기 문구를 자동으로 찾아서 넣기</label>
 <label class="chk"><input type="checkbox" id="cap" checked>영어 첫 글자를 대문자로 정리</label>
-<label class="chk"><input type="checkbox" id="rawEn">영문 변환 없이 원문 그대로 사용</label>
 <label class="chk"><input type="checkbox" id="pct">배합비(%)를 원재료명 옆에 표시</label>
 <label class="chk"><input type="checkbox" id="org">원산지 함께 표시</label></section>
 <details><summary>이름이나 비율이 엉뚱하게 잡혔나요?</summary>
@@ -263,7 +316,7 @@ th{background:var(--soft)}td,th{padding:9px 10px}
 
 <script>
 const AL=[['알류',/계란|달걀|난백|난황|전란|난액/],['우유',/우유|분유|유청|버터|치즈|크림|카제인|연유/],['메밀',/메밀/],['땅콩',/땅콩/],['대두',/대두|콩|두유|간장|된장|두부/],['밀',/밀(?!크)|소맥|글루텐/],['고등어',/고등어/],['게',/꽃게|대게|게살/],['새우',/새우/],['돼지고기',/돼지/],['복숭아',/복숭아/],['토마토',/토마토/],['아황산류',/아황산|이산화황/],['호두',/호두/],['닭고기',/닭/],['쇠고기',/쇠고기|소고기/],['오징어',/오징어/],['조개류',/조개|굴|전복|홍합/],['잣',/잣/]];
-const BASE={};
+const BASE={'고형분':'Solids','고형물':'Solids','고형분 함량':'Solids Content','유고형분':'Milk Solids','무지유고형분':'Milk Solids-Nonfat','유지방':'Milk Fat'};
 `설탕|Sugar;정제수|Water;물|Water;물엿|Glucose Syrup;올리고당|Oligosaccharide;액상과당|High Fructose Corn Syrup;포도당|Glucose;과당|Fructose;꿀|Honey;벌꿀|Honey;알룰로스|Allulose;에리스리톨|Erythritol;수크랄로스|Sucralose;아스파탐|Aspartame;스테비아|Stevia;소르비톨|Sorbitol;자일리톨|Xylitol;흑설탕|Brown Sugar;황설탕|Brown Sugar;조청|Grain Syrup;
 밀가루|Wheat Flour;박력분|Soft Wheat Flour;강력분|Hard Wheat Flour;중력분|All-Purpose Flour;쌀가루|Rice Flour;찹쌀가루|Glutinous Rice Flour;쌀|Rice;현미|Brown Rice;옥수수|Corn;옥수수전분|Corn Starch;전분|Starch;감자전분|Potato Starch;타피오카전분|Tapioca Starch;변성전분|Modified Starch;귀리|Oats;보리|Barley;호밀|Rye;메밀|Buckwheat;글루텐|Gluten;빵가루|Bread Crumbs;
 우유|Milk;전지분유|Whole Milk Powder;탈지분유|Skim Milk Powder;분유|Milk Powder;생크림|Fresh Cream;크림|Cream;크림치즈|Cream Cheese;치즈|Cheese;모짜렐라치즈|Mozzarella Cheese;체다치즈|Cheddar Cheese;버터|Butter;유청|Whey;유청단백|Whey Protein;발효유|Fermented Milk;연유|Condensed Milk;카제인|Casein;유당|Lactose;
@@ -368,7 +421,7 @@ function setRows(r){
   build();
 }
 [['cN','n'],['cE','e'],['cR','r'],['cS','s'],['cO','o'],['cU','u']].forEach(([id,k])=>$(id).onchange=()=>{cols[k]=+$(id).value;build();});
-['sort','org','pct','alg','cap','rawEn'].forEach(id=>$(id).onchange=()=>{if(items.length)render();});
+['sort','org','pct','alg','cap'].forEach(id=>$(id).onchange=()=>{if(items.length)render();});
 
 function build(){
   const g=(r,i)=>i>=0?String(r[i]??'').trim():'';
@@ -378,8 +431,9 @@ function build(){
     const v=cols.r>=0?num(r[cols.r]):NaN, bad=EXC.test(ko)||EXC.test(en)||/^(원료명|원재료명|재료명|원료|원재료|재료|성분명|ingredients?|raw\s*materials?|합계|소계|총계|계|total|subtotal|sum)$/i.test(name.trim());
     if(/내용량|수율/.test(name)){let cv=cols.r>=0?num(r[cols.r]):NaN;if(isNaN(cv))cv=r.map((x,i)=>i===cols.n||i===cols.e?NaN:num(x)).find(x=>!isNaN(x));if(isNaN(cv))cv=num(name);
       if(!isNaN(cv)){if(/수율/.test(name))meta.yield=cv;else{meta.content=cv;meta.unit=/\(\s*g\s*\)|\d\s*g\b/i.test(name)?'g':'mL';}}}
+    if(bad) return;
     const nutv={};Object.keys(cols.nut).forEach(k=>{const ix=cols.nut[k];if(ix>=0&&String(r[ix]).trim()!==''){const x=num(r[ix]);if(!isNaN(x))nutv[k]=x;}});
-    items.push({ko,en,v:isNaN(v)?0:v,s:g(r,cols.s),o:g(r,cols.o),u:g(r,cols.u),nut:nutv,on:!bad,auto:bad});
+    items.push({ko,en,v:isNaN(v)?0:v,s:g(r,cols.s),o:g(r,cols.o),u:g(r,cols.u),nut:nutv,on:true,auto:false});
   });
   if(!items.length){alert('원재료 이름을 찾지 못했어요. 왼쪽 “이름이나 비율이 엉뚱하게 잡혔나요?”에서 열을 골라 주세요.');return;}
   const sum=items.filter(i=>i.on).reduce((s,i)=>s+i.v,0);
@@ -394,16 +448,26 @@ function cleanFlavorCode(s){
   return String(s??'').replace(/(향)\s*[\(\[\{#:_\-]?\s*\d{3,}\s*[)\]]?/g,'$1');
 }
 function tr1(t,d){
-  t=cleanFlavorCode(t);
-  if($('rawEn').checked)return t;
-  if(/^[\d.\s]*$/.test(t)) return t;
+  t=cleanFlavorCode(t).trim();
+  if(/^[\d.\s%]*$/.test(t)) return t;
   if(d[t]) return d[t];
-  const ws=t.split(/\s+/);
-  if(ws.length>1&&ws.every(w=>d[w])) return ws.map(w=>d[w]).join(' ');
-  if(!unk.includes(t)) unk.push(t);
-  return `[${t}]`;
+  const par=t.match(/^(.*?)\((.*)\)(.*)$/);
+  if(par) return tr1(par[1],d)+'('+translatePhrase(par[2],d)+')'+par[3];
+  return translatePhrase(t,d);
 }
-const trs=(s,d)=>{s=cleanFlavorCode(s);if($('rawEn').checked)return s;return s.split(/([,·\/;])/).map(p=>/^[,·\/;]$/.test(p)?p+(p===','?' ':''):tr1(p.trim(),d)).join('').replace(/,\s+,/g,', ');};
+function translatePhrase(t,d){
+  t=cleanFlavorCode(t).trim();
+  if(d[t]) return d[t];
+  return t.split(/([,·\/;\s]+)/).map(p=>{
+    if(!p || /^[,·\/;\s]+$/.test(p)) return p;
+    if(d[p]) return d[p];
+    if(/^[\d.]+%?$/.test(p)) return p;
+    if(/[가-힣]/.test(p)){if(!unk.includes(p))unk.push(p);return `[${p}]`;}
+    return p;
+  }).join('');
+}
+const trs=(s,d)=>cleanFlavorCode(s).split(/([,·\/;])/).map(p=>/^[,·\/;]$/.test(p)?p+(p===','?' ':''):tr1(p.trim(),d)).join('').replace(/,\s+,/g,', ');
+function ingredientEnglish(i,d){let nm=i.en?cleanFlavorCode(i.en):tr1(i.ko,d);if(i.en&&i.ko&&!/\([^)]*[A-Za-z][^)]*\)/.test(nm)){const m=cleanFlavorCode(i.ko).match(/\(([^()]*)\)/);if(m&&/[가-힣]/.test(m[1]))nm+=` (${tr1(m[1],d)})`;}return $('cap').checked?cap(nm):nm;}
 const cap=s=>s.split(/(\s+)/).map((w,k)=>/^[a-z]/.test(w)&&(k===0||!/^(and|of|with|in|the|a|an|to|for)$/.test(w))?w[0].toUpperCase()+w.slice(1):w).join('');
 const jo=(w,a,b)=>{const c=w.charCodeAt(w.length-1)-44032;return(c>=0&&c<11172&&c%28!==0)?a:b;};
 
@@ -442,7 +506,7 @@ function render(){
     return nm+(p.length?`(${p.join(', ')})`:'')+pc(i);
   }).join(', ');
   const enTxt=on.map(i=>{
-    let nm=$('rawEn').checked?cleanFlavorCode(i.en||i.ko):(i.en?($('cap').checked?cap(cleanFlavorCode(i.en)):cleanFlavorCode(i.en)):tr1(i.ko,d));
+    let nm=ingredientEnglish(i,d);
     if(i.u) nm=`${trs(i.u,d)} (${nm})`;
     const p=[]; if(i.s) p.push(trs(i.s,d)); if($('org').checked&&i.o) p.push(trs(i.o,d));
     return nm+(p.length?` (${p.join(', ')})`:'')+pc(i);
@@ -451,7 +515,8 @@ function render(){
   if($('alg').checked){const a=alLines(false); if(a.ko&&hasKo) ko+='\n\n'+a.ko; if(a.en) en+='\n\n'+a.en;}
   $('ko').value=ko; $('en').value=en;
   $('unkBox').classList.toggle('hide',!unk.length);
-  $('unkList').innerHTML=unk.map(w=>`<label>${esc(w)}</label><input class="t ui" data-w="${esc(w)}" placeholder="영어로 뭐라고 쓸까요?">`).join('');
+  $('unkList').innerHTML=unk.map(w=>`<div class="unkrow"><label>${esc(w)}</label><input class="t ui" data-w="${esc(w)}" placeholder="영어로 뭐라고 쓸까요?" ${custom[w]===w?'disabled':''} value="${custom[w]&&custom[w]!==w?esc(custom[w]):''}"><label class="chk"><input type="checkbox" class="rawword" data-w="${esc(w)}" ${custom[w]===w?'checked':''}> 이 단어는 원문 그대로 사용</label></div>`).join('');
+  document.querySelectorAll('.rawword').forEach(c=>c.onchange=()=>{const input=[...document.querySelectorAll('.ui')].find(x=>x.dataset.w===c.dataset.w);if(input)input.disabled=c.checked;});
   $('trMsg').textContent=unk.length?`영어를 모르는 단어 ${unk.length}개는 [ ]로 표시했어요. 아래에 적고 저장하면 다음부터 자동으로 들어가요.`:'어색한 표현은 위 칸에서 바로 고칠 수 있어요. (옵션을 바꾸면 다시 만들어져요)';
   const t=Math.round(total*100)/100;
   $('note').innerHTML=`재료 ${on.length}개`+(cols.r>=0?` · 배합비 합계 ${t}%`+(Math.abs(t-100)>0.5?' <span class="warn">(100%가 아니에요. 엑셀 값을 확인해 주세요)</span>':'')+(scaled?' · 비율이 소수로 적혀 있어서 %로 바꿨어요':''):' · 배합비 열이 없어서 엑셀에 적힌 순서대로 만들었어요');
@@ -459,7 +524,7 @@ function render(){
   document.querySelectorAll('#tbl input').forEach(c=>c.onchange=()=>{items[+c.dataset.k].on=c.checked;render();});
 }
 $('apply').onclick=()=>{
-  document.querySelectorAll('.ui').forEach(i=>{const v=i.value.trim();if(v)custom[i.dataset.w]=v;});
+  document.querySelectorAll('.ui').forEach(i=>{const w=i.dataset.w;if(!w)return;const raw=[...document.querySelectorAll('.rawword')].find(c=>c.dataset.w===w);if(raw&&raw.checked)custom[w]=w;else{const v=i.value.trim();if(v)custom[w]=v;}});
   try{localStorage.setItem('ingDict',JSON.stringify(custom));}catch(e){}
   render();
 };
