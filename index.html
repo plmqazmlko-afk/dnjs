@@ -63,13 +63,15 @@ tr.off td{color:var(--mu);text-decoration:line-through}tr.off td:last-child{text
 .tabs button{background:transparent;color:var(--tx);border:1px solid var(--bd);margin:0 6px 0 0}
 .tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
-.nc{background:#6b4a1f;color:#fff;border-radius:22px;padding:18px;max-width:420px;margin:10px 0}
-.nc .nh{font-size:26px;font-weight:700}.nc .ns{font-size:13px;margin:4px 0 12px}
-.nc table{background:#fff;color:#222;width:100%;border-collapse:collapse}
-.nc td{padding:7px 10px;border-bottom:1px solid #d9cdb8;white-space:normal;font-size:15px}
-.nc td:last-child{text-align:right;font-weight:700;white-space:nowrap}
-.nc tr.hr td{font-size:13px;border-bottom:2px solid #6b4a1f}
-.nc td.in{padding-left:28px}.nc .fn{font-size:11px;margin-top:8px;line-height:1.4}
+.nc{background:#68471f;color:#fff;border:0;border-radius:34px;padding:22px 18px 26px;max-width:560px;margin:10px 0;box-shadow:5px 0 0 #d5b47a;overflow:hidden}
+.nc .nh{font-size:30px;font-weight:900;letter-spacing:-.7px;padding:0 12px 2px;color:#fff}.nc .ns{font-size:14px;font-weight:700;color:#fff;margin:3px 12px 14px;line-height:1.55}
+.nc table{background:#fff;color:#111;width:100%;border-collapse:collapse;table-layout:fixed}
+.nc th,.nc td{padding:10px 12px;border-bottom:1px solid #b8a080;white-space:normal;font-size:15px;text-align:left}
+.nc th{font-size:14px;background:#fff;color:#111;font-weight:800;vertical-align:middle}
+.nc th:first-child,.nc td:first-child{width:76%}.nc th:last-child,.nc td.pct{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.nc td.item{font-weight:800}.nc td.pct{font-weight:800}.nc tr.hr th{border-bottom:3px solid #68471f}
+.nc td.in{padding-left:28px}.nc tbody tr:nth-child(even){background:#fff}.nc tbody tr.major td{border-bottom:3px solid #68471f}.nc .fn{font-size:10px;color:#fff;margin:10px 12px 0;line-height:1.5}
+@media(max-width:520px){.nc{padding:18px 12px 22px;border-radius:28px}.nc .nh{font-size:27px}.nc .ns{font-size:13px}.nc th,.nc td{padding:9px 8px;font-size:13px}.nc th:first-child,.nc td:first-child{width:75%}}
 .gd p,.gd li{font-size:14px;margin:4px 0}.gd table{margin:6px 0}
 #nIn input[readonly]{opacity:.7}
 .cov{border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:14px;border:1px solid var(--bd)}.cov.bad{border-color:var(--ac);color:var(--ac)}.cov.ok{color:#2e7d4f}.sg{padding:2px 8px;margin:0 0 0 6px;font-size:12px}.okc{color:#2e7d4f}.xc{color:var(--ac)}
@@ -141,6 +143,7 @@ th{background:var(--soft)}td,th{padding:9px 10px}
 <label class="chk"><input type="checkbox" id="sort" checked>배합비 많은 순으로 정렬</label>
 <label class="chk"><input type="checkbox" id="alg" checked>알레르기 문구를 자동으로 찾아서 넣기</label>
 <label class="chk"><input type="checkbox" id="cap" checked>영어 첫 글자를 대문자로 정리</label>
+<label class="chk"><input type="checkbox" id="rawEn">영문 변환 없이 원문 그대로 사용</label>
 <label class="chk"><input type="checkbox" id="pct">배합비(%)를 원재료명 옆에 표시</label>
 <label class="chk"><input type="checkbox" id="org">원산지 함께 표시</label></section>
 <details><summary>이름이나 비율이 엉뚱하게 잡혔나요?</summary>
@@ -169,7 +172,7 @@ th{background:var(--soft)}td,th{padding:9px 10px}
 
 <div id="p2" class="lay hide">
 <div class="side">
-<section><h2>알레르기 항목 체크</h2><p class="msg">엑셀의 원재료 이름을 보고 자동으로 체크해 놨어요. 틀린 건 직접 고치세요. 고치면 원재료명 탭의 문구에도 바로 반영돼요.</p>
+<section><h2>알레르기 항목 체크</h2><p class="msg">엑셀의 원재료 이름을 보고 자동으로 체크해 놨어요. 틀린 건 직접 고치세요. 고치면 원재료명 탭의 문구에도 바로 반영돼요. <b class="warn">이 자동체크는 한국 표시 대상 중심이에요. 미국 수출용은 참깨·생선 종류·견과류 등 FDA 기준과 원료 규격서를 별도로 확인하세요.</b></p>
 <label>① 원재료로 사용한 것 (함유)</label><div id="aHas" class="g2"></div>
 <label style="margin-top:12px">② 원재료는 아니지만 같은 제조시설·라인에서 다루는 것 (혼입 가능성)</label><div id="aMay" class="g2"></div></section>
 </div>
@@ -294,7 +297,7 @@ const ALE={알류:'Egg',우유:'Milk',메밀:'Buckwheat',땅콩:'Peanut',대두:
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const num=v=>parseFloat(String(v).replace(/[^0-9.\-]/g,''));
-const EXC=/내용량|수율|합계|총\s*(량|중량|계)|소계|^\s*계\s*$|비고|^\s*(total|sum)\b|\(\s*(ml|g|kg|l|%)\s*\)/i;
+const EXC=/내용량|수율|합계|총\s*(량|중량|계)|소계|^\s*계\s*$|비고|^\s*(total|sum)\b|\b(total|subtotal|sum)\b|^\s*(원료명|원재료명|재료명|원료|원재료|재료|성분명|ingredient(?:s)?|raw\s*materials?)\s*$|\(\s*(ml|g|kg|l|%)\s*\)/i;
 const ALEN=[['Egg',/\begg/i],['Milk',/\bmilk|whey|butter|cream|cheese|casein|lactose/i],['Soy',/\bsoy/i],['Wheat',/wheat|gluten/i],['Peanut',/peanut/i],['Walnut',/walnut/i],['Buckwheat',/buckwheat/i],['Shrimp',/shrimp/i],['Crab',/\bcrab/i],['Mackerel',/mackerel/i],['Squid',/squid/i],['Peach',/peach/i],['Tomato',/tomato/i],['Pine Nut',/pine nut/i],['Sulfites',/sulfite/i]];
 const EN2KO={Egg:'알류',Milk:'우유',Soy:'대두',Wheat:'밀',Peanut:'땅콩',Walnut:'호두',Buckwheat:'메밀',Shrimp:'새우',Crab:'게',Mackerel:'고등어',Squid:'오징어',Peach:'복숭아',Tomato:'토마토','Pine Nut':'잣',Sulfites:'아황산류'};
 const ALK=AL.map(a=>a[0]);
@@ -302,27 +305,44 @@ const COMPLEX=/향료|안정제|유화제|레시틴|젤라틴|효소|소스|조�
 let wb=null,rows=[],hdr=-1,items=[],cols={},unk=[],custom={},aSig=null,aHas=new Set(),aMay=new Set(),scaled=false,meta={};
 try{custom=JSON.parse(localStorage.getItem('ingDict')||'{}');}catch(e){}
 
+const MAX_FILE_BYTES=20*1024*1024, MAX_ROWS=20000, MAX_COLS=200;
 function pick(f){
+  if(!f)return;
+  if(!/\.(xlsx|xls|csv)$/i.test(f.name)){alert('엑셀(.xlsx, .xls)이나 CSV(.csv) 파일만 사용할 수 있어요.');return;}
+  if(f.size>MAX_FILE_BYTES){alert('파일이 20MB를 넘어요. 필요한 시트만 남기거나 파일을 나눠서 올려 주세요.');return;}
   f.arrayBuffer().then(b=>{
-    wb=XLSX.read(b,{type:'array'});
-    let best=wb.SheetNames[0],mx=-1;
-    wb.SheetNames.forEach(n=>{const c=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1}).length;if(c>mx){mx=c;best=n;}});
-    $('sheet').innerHTML=wb.SheetNames.map(n=>`<option>${esc(n)}</option>`).join('');
+    const candidate=XLSX.read(b,{type:'array'});
+    if(!candidate.SheetNames.length)throw new Error('시트가 없어요.');
+    let best=candidate.SheetNames[0],mx=-1;
+    candidate.SheetNames.forEach(n=>{
+      const ref=candidate.Sheets[n]['!ref'];
+      if(!ref)return;
+      const rg=XLSX.utils.decode_range(ref),r=rg.e.r+1,c=rg.e.c+1;
+      if(r>MAX_ROWS||c>MAX_COLS)throw new Error(`시트 “${n}”의 크기가 너무 커요. 최대 ${MAX_ROWS.toLocaleString()}행 × ${MAX_COLS}열까지 지원해요.`);
+      if(r>mx){mx=r;best=n;}
+    });
+    if(mx<0)throw new Error('읽을 수 있는 데이터가 없어요.');
+    wb=candidate;
+    $('sheet').innerHTML=wb.SheetNames.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
     $('sheet').value=best; loadSheet();
-  }).catch(()=>alert('파일을 읽지 못했어요. 엑셀(.xlsx, .xls)이나 CSV 파일인지 확인해 주세요.'));
+  }).catch(e=>alert(e&&e.message?e.message:'파일을 읽지 못했어요. 엑셀(.xlsx, .xls)이나 CSV 파일인지 확인해 주세요.'));
 }
-function loadSheet(){setRows(XLSX.utils.sheet_to_json(wb.Sheets[$('sheet').value],{header:1,defval:''}));}
+function loadSheet(){if(!wb||!wb.Sheets[$('sheet').value])return;setRows(XLSX.utils.sheet_to_json(wb.Sheets[$('sheet').value],{header:1,defval:''}));}
 $('sheet').onchange=loadSheet;
 $('drop').onclick=()=>$('file').click();
-$('file').onchange=e=>{if(e.target.files[0])pick(e.target.files[0]);};
+$('file').onchange=e=>{const f=e.target.files[0];if(f)pick(f);e.target.value='';};
 ['dragover','dragenter'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.add('on');}));
 ['dragleave','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.remove('on');}));
 $('drop').addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)pick(f);});
 $('paste').oninput=()=>{const t=$('paste').value;if(t.trim())setRows(t.split(/\r?\n/).map(l=>l.split('\t')));};
 
 function setRows(r){
-  rows=r.map(x=>x.map(c=>c??'')).filter(x=>x.some(c=>String(c).trim()!==''));
-  if(!rows.length){alert('내용이 비어 있어요.');return;}
+  if(!Array.isArray(r)||r.length>MAX_ROWS||r.some(x=>Array.isArray(x)&&x.length>MAX_COLS)){
+    alert(`데이터가 너무 커요. 최대 ${MAX_ROWS.toLocaleString()}행 × ${MAX_COLS}열까지 지원해요.`);return;
+  }
+  const nextRows=r.map(x=>(Array.isArray(x)?x:[]).map(c=>c??'')).filter(x=>x.some(c=>String(c).trim()!==''));
+  if(!nextRows.length){alert('내용이 비어 있어요.');return;}
+  rows=nextRows;
   const KW=/원재료|원료|품명|재료|영문|english|배합|비율|함량|세부|복합|원산지|용도/i;
   let bs=0; hdr=-1;
   rows.slice(0,25).forEach((x,i)=>{const sc=x.filter(c=>{const t=String(c);return t.length<30&&KW.test(t);}).length;if(sc>0&&sc>=bs){bs=sc;hdr=i;}});
@@ -348,14 +368,14 @@ function setRows(r){
   build();
 }
 [['cN','n'],['cE','e'],['cR','r'],['cS','s'],['cO','o'],['cU','u']].forEach(([id,k])=>$(id).onchange=()=>{cols[k]=+$(id).value;build();});
-['sort','org','pct','alg','cap'].forEach(id=>$(id).onchange=()=>{if(items.length)render();});
+['sort','org','pct','alg','cap','rawEn'].forEach(id=>$(id).onchange=()=>{if(items.length)render();});
 
 function build(){
   const g=(r,i)=>i>=0?String(r[i]??'').trim():'';
   items=[]; scaled=false; meta={};
   rows.slice(hdr+1).forEach(r=>{
     const ko=g(r,cols.n),en=g(r,cols.e),name=ko||en; if(!name) return;
-    const v=cols.r>=0?num(r[cols.r]):NaN, bad=EXC.test(ko)||EXC.test(en);
+    const v=cols.r>=0?num(r[cols.r]):NaN, bad=EXC.test(ko)||EXC.test(en)||/^(원료명|원재료명|재료명|원료|원재료|재료|성분명|ingredients?|raw\s*materials?|합계|소계|총계|계|total|subtotal|sum)$/i.test(name.trim());
     if(/내용량|수율/.test(name)){let cv=cols.r>=0?num(r[cols.r]):NaN;if(isNaN(cv))cv=r.map((x,i)=>i===cols.n||i===cols.e?NaN:num(x)).find(x=>!isNaN(x));if(isNaN(cv))cv=num(name);
       if(!isNaN(cv)){if(/수율/.test(name))meta.yield=cv;else{meta.content=cv;meta.unit=/\(\s*g\s*\)|\d\s*g\b/i.test(name)?'g':'mL';}}}
     const nutv={};Object.keys(cols.nut).forEach(k=>{const ix=cols.nut[k];if(ix>=0&&String(r[ix]).trim()!==''){const x=num(r[ix]);if(!isNaN(x))nutv[k]=x;}});
@@ -369,7 +389,13 @@ function build(){
   render();
 }
 
+function cleanFlavorCode(s){
+  // '향' 뒤에 붙는 3자리 이상 숫자형 내부 코드만 제거
+  return String(s??'').replace(/(향)\s*[\(\[\{#:_\-]?\s*\d{3,}\s*[)\]]?/g,'$1');
+}
 function tr1(t,d){
+  t=cleanFlavorCode(t);
+  if($('rawEn').checked)return t;
   if(/^[\d.\s]*$/.test(t)) return t;
   if(d[t]) return d[t];
   const ws=t.split(/\s+/);
@@ -377,7 +403,7 @@ function tr1(t,d){
   if(!unk.includes(t)) unk.push(t);
   return `[${t}]`;
 }
-const trs=(s,d)=>s.split(/([,·\/;])/).map(p=>/^[,·\/;]$/.test(p)?p+(p===','?' ':''):tr1(p.trim(),d)).join('').replace(/,\s+,/g,', ');
+const trs=(s,d)=>{s=cleanFlavorCode(s);if($('rawEn').checked)return s;return s.split(/([,·\/;])/).map(p=>/^[,·\/;]$/.test(p)?p+(p===','?' ':''):tr1(p.trim(),d)).join('').replace(/,\s+,/g,', ');};
 const cap=s=>s.split(/(\s+)/).map((w,k)=>/^[a-z]/.test(w)&&(k===0||!/^(and|of|with|in|the|a|an|to|for)$/.test(w))?w[0].toUpperCase()+w.slice(1):w).join('');
 const jo=(w,a,b)=>{const c=w.charCodeAt(w.length-1)-44032;return(c>=0&&c<11172&&c%28!==0)?a:b;};
 
@@ -411,12 +437,12 @@ function render(){
   const total=on.reduce((s,i)=>s+i.v,0), hasKo=on.some(i=>i.ko);
   const pc=i=>$('pct').checked&&cols.r>=0&&i.v>0?` ${Math.round(i.v*100)/100}%`:'';
   const koTxt=on.map(i=>{
-    let nm=i.ko||i.en; if(i.u) nm=`${i.u}(${nm})`;
-    const p=[]; if(i.s) p.push(i.s); if($('org').checked&&i.o) p.push(i.o);
+    let nm=cleanFlavorCode(i.ko||i.en); if(i.u) nm=`${cleanFlavorCode(i.u)}(${nm})`;
+    const p=[]; if(i.s) p.push(cleanFlavorCode(i.s)); if($('org').checked&&i.o) p.push(cleanFlavorCode(i.o));
     return nm+(p.length?`(${p.join(', ')})`:'')+pc(i);
   }).join(', ');
   const enTxt=on.map(i=>{
-    let nm=i.en?($('cap').checked?cap(i.en):i.en):tr1(i.ko,d);
+    let nm=$('rawEn').checked?cleanFlavorCode(i.en||i.ko):(i.en?($('cap').checked?cap(cleanFlavorCode(i.en)):cleanFlavorCode(i.en)):tr1(i.ko,d));
     if(i.u) nm=`${trs(i.u,d)} (${nm})`;
     const p=[]; if(i.s) p.push(trs(i.s,d)); if($('org').checked&&i.o) p.push(trs(i.o,d));
     return nm+(p.length?` (${p.join(', ')})`:'')+pc(i);
@@ -490,11 +516,22 @@ function calc(){
   autoFill();
   const tot=$('nTot').value,unit=$('nUnit').value,basis=$('nBasis').value,sv=$('nSv').value;
   $('nSvBox').classList.toggle('hide',basis!=='sv');
+  if($('nAuto').checked&&items.some(i=>i.on)){
+    const amount=basis==='total'?+tot:basis==='sv'?+sv:100;
+    const y=+$('nYield').value,d=+$('nDens').value,unit=$('nUnit').value;
+    if(!(amount>0)||!(y>0)||(unit==='mL'&&!(d>0))){
+      $('nWarn').innerHTML='<span class="warn">자동 계산하려면 기준 내용량·수율·비중을 모두 0보다 큰 숫자로 입력해 주세요. 이전 계산값은 표시하지 않도록 비웠어요.</span>';
+      NUT.forEach(d=>$('n_'+d.k).value='');$('nKo').innerHTML='<p class="msg">기준값을 확인하면 표가 만들어져요.</p>';$('nEn').innerHTML='';nTxt={ko:'',en:''};$('nChk').innerHTML='';$('nClaimBody').innerHTML='';return;
+    }
+  }
   const rows=[],miss=[];lastN=rows;
   NUT.forEach(d=>{
     const raw=$('n_'+d.k).value; if(raw===''){if(!d.opt) miss.push(d.ko);return;}
-    const v=+raw,r=rnd(d.k,v),full=r.txt.includes('미만')?r.txt:r.txt+d.u;
-    rows.push({d,v,r,full,pct:d.dv?Math.round(r.s/d.dv*100):null});
+    const v=+raw;
+    if(!Number.isFinite(v)||v<0){miss.push(d.ko+' (0 이상 숫자 필요)');return;}
+    const r=rnd(d.k,v),full=r.txt.includes('미만')?r.txt:r.txt+d.u;
+    const fullEn=r.txt.includes('미만')?`Less than ${r.txt.replace(' 미만','')}`:r.txt+d.u;
+    rows.push({d,v,r,full,fullEn,pct:d.dv?Math.round(r.s/d.dv*100):null});
   });
   $('nWarn').innerHTML=(miss.length?`<span class="warn">아직 비어 있는 필수 항목: ${miss.join(', ')}</span>`:'')+kcalNote();
   if(!rows.length){$('nKo').innerHTML='<p class="msg">값을 넣으면 여기에 표가 만들어져요.</p>';$('nEn').innerHTML='';nTxt={ko:'',en:''};$('nChk').innerHTML='';return;}
@@ -502,11 +539,13 @@ function calc(){
     const K=lang==='ko',t=tot?`${tot}${K?'':' '}${unit}`:'';
     const l2=basis==='total'?(K?'총 내용량당':'Per total contents'):basis==='100'?(K?`100${unit}당`:`Per 100 ${unit}`):(K?`1회 제공량(${sv}${unit})당`:`Per serving (${sv} ${unit})`);
     let lines=[K?`영양정보`:`Nutrition Facts`,t?(K?`총 내용량: ${t}`:`Total contents: ${t}`):'',l2].filter(Boolean);
-    const trs=rows.map(x=>{const nm=K?x.d.ko:x.d.en;lines.push(`${nm} ${x.full}${x.pct!==null?' '+x.pct+'%':''}`);
-      return `<tr><td class="${x.d.ind?'in':''}">${nm} ${x.full}</td><td>${x.pct!==null?x.pct+'%':''}</td></tr>`;}).join('');
-    const fn=K?'1일 영양성분 기준치에 대한 비율(%)은 2,000kcal 기준이므로 개인의 필요 열량에 따라 다를 수 있습니다.':'*Percent Daily Values are based on a 2,000 kcal diet. Your daily values may be higher or lower depending on your calorie needs.';
+    const trs=rows.map(x=>{const nm=K?x.d.ko:x.d.en,shown=K?x.full:x.fullEn,pct=x.pct===null?'':x.pct+'%';lines.push(`${nm} ${shown}${pct?' '+pct:''}`);
+      const major=['kcal','fat','chol','na','carb','pro'].includes(x.d.k);
+      return `<tr class="${major?'major':''}"><td class="item ${x.d.ind?'in':''}">${nm} ${shown}</td><td class="pct">${pct}</td></tr>`;}).join('');
+    const fn=K?'*%REI/RNI는 1일 영양성분 기준치에 대한 비율입니다.':'*% Daily Value is the percentage of the daily reference value.';
     lines.push(fn);
-    return{txt:lines.join('\n'),html:`<div class="nc"><div class="nh">${K?'영양정보':'Nutrition Facts'}</div><div class="ns">${t?(K?`총 내용량: ${t}`:`Total contents: ${t}`)+'<br>':''}${l2}</div><table><tr class="hr"><td>${l2}</td><td>${K?'기준치 비율':'% Daily Value*'}</td></tr>${trs}</table><div class="fn">${fn}</div></div>`};
+    const basisLabel=K?(basis==='sv'?`1회 제공량(${sv}${unit}) 기준`:'1회 제공량 기준'):(basis==='sv'?`Serving size (${sv} ${unit})`:'Serving amount basis');
+    return{txt:lines.join('\n'),html:`<div class="nc"><div class="nh">${K?'영양정보':'Nutrition Facts'}</div><div class="ns">${t?(K?`총 내용량: ${t}`:`Total contents: ${t}`)+'<br>':''}${K?(basis==='sv'?`용기당 제공량 또는 총 제공량: ${sv}${unit}`:'용기당 제공량 또는 총 제공량: 1회'):''}<br><b>${basisLabel}</b></div><table><thead><tr class="hr"><th>${K?'1회 제공량 기준':'Serving amount basis'}</th><th>${K?'%REI/RNI*':'%DV*'}</th></tr></thead><tbody>${trs}</tbody></table><div class="fn">${fn}</div></div>`};
   };
   const ko=mk('ko'),en=mk('en'); nTxt={ko:ko.txt,en:en.txt};
   $('nKo').innerHTML=ko.html; $('nEn').innerHTML=en.html;
@@ -847,14 +886,17 @@ function autoFill(){setCov();
     ks.forEach(k=>{tot0[k]+=(k==='kcal'?kc:g(k))*i.v/100;}); M+=i.v;
   });
   if(M<=0){$('nAutoMsg').innerHTML='<span class="warn">배합비 열이 없어서 자동 계산을 할 수 없어요.</span>';return;}
-  const y=(+$('nYield').value||100)/100, dens=+$('nDens').value||1, unit=$('nUnit').value, basis=$('nBasis').value;
+  const yv=+$('nYield').value, dv=+$('nDens').value, y=(yv>0?yv:NaN)/100, unit=$('nUnit').value, dens=unit==='mL'?(dv>0?dv:NaN):1, basis=$('nBasis').value;
+  if(!Number.isFinite(y)||!Number.isFinite(dens)){
+    $('nAutoMsg').innerHTML='<span class="warn">수율과 비중은 0보다 큰 숫자여야 해요. 값을 확인해 주세요.</span>';setCov(Math.round(cov/M*1000)/10,miss.length,Math.round(avg/M*1000)/10);return;
+  }
   const gpu=unit==='mL'?dens:1, p100=k=>tot0[k]*100/M/y;
   let grams=null;
   if(basis==='total') grams=(+$('nTot').value||0)*gpu; else if(basis==='100') grams=100*gpu; else grams=(+$('nSv').value||0)*gpu;
   let msg=`재료 ${on.length}개 · 배합비 합계 ${Math.round(M*100)/100}%`+(y!==1?` · 수율 ${Math.round(y*1000)/10}% 반영`:'');
   if(Math.abs(M-100)>1)msg+=' <span class="warn">(배합비 합계가 100%가 아니라서 100% 기준으로 환산했어요. 원료 투입량(g)을 적은 거라면 괜찮지만 비율이 틀렸다면 엑셀을 확인하세요. 가열로 줄어드는 양은 수율에 넣어 주세요)</span>';
-  if(!grams){msg+='<br><span class="warn">총 내용량(또는 1회 제공량)을 넣어 주세요.</span>';}
-  else NUT.forEach(d=>{const x=p100(d.k)*grams/100;$('n_'+d.k).value=(d.k==='fib'&&x<0.0005)?'':Math.round(x*1000)/1000;});
+  if(!Number.isFinite(grams)||grams<=0){msg+='<br><span class="warn">총 내용량(또는 1회 제공량)은 0보다 큰 숫자여야 해요.</span>';}
+  else if(Number.isFinite(grams)&&grams>0) NUT.forEach(d=>{const x=p100(d.k)*grams/100;$('n_'+d.k).value=(d.k==='fib'&&x<0.0005)?'':Math.round(x*1000)/1000;});
   if(miss.length) msg+=`<br><span class="warn">영양성분 값이 없는 재료 ${miss.length}개는 0으로 계산했어요: ${miss.map(esc).join(', ')}. 오른쪽 표에 넣어 주세요.</span>`;
   $('nAutoMsg').innerHTML=msg; setCov(Math.round(cov/M*1000)/10,miss.length,Math.round(avg/M*1000)/10);
 }
@@ -876,13 +918,37 @@ $('nTbl').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)ret
 function dl(n,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
 $('dbOut').onclick=()=>dl('영양값_저장.json',new Blob([JSON.stringify({nutDB:NV,ingDict:custom,compDB:COMP,xDB:XV},null,1)],{type:'application/json'}));
 $('dbIn').onclick=()=>$('dbF').click();
-$('dbF').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(s=>{try{const j=JSON.parse(s);
-  Object.keys(j.nutDB||{}).forEach(k=>NV[k]=Object.assign(NV[k]||{},j.nutDB[k]));Object.assign(custom,j.ingDict||{});Object.assign(COMP,j.compDB||{});Object.assign(XV,j.xDB||{});localStorage.setItem('xDB',JSON.stringify(XV));localStorage.setItem('compDB',JSON.stringify(COMP));
-  localStorage.setItem('nutDB',JSON.stringify(NV));localStorage.setItem('ingDict',JSON.stringify(custom));
-  $('dbMsg').textContent=`불러왔어요: 영양값 ${Object.keys(j.nutDB||{}).length}개 재료, 영어 사전 ${Object.keys(j.ingDict||{}).length}개`;
-  nSig=null;calc();if(items.length)render();}catch(x){$('dbMsg').textContent='파일을 읽지 못했어요. 이 도구에서 내보낸 JSON인지 확인해 주세요.';}});e.target.value='';};
+$('dbF').onchange=e=>{const f=e.target.files[0];if(!f)return;
+  if(f.size>10*1024*1024){$('dbMsg').textContent='백업 파일이 10MB를 넘어요.';e.target.value='';return;}
+  f.text().then(s=>{try{
+    const j=JSON.parse(s),isObj=x=>x&&typeof x==='object'&&!Array.isArray(x),validMap=x=>x===undefined||(isObj(x)&&Object.keys(x).length<=50000);
+    if(!isObj(j)||!validMap(j.nutDB)||!validMap(j.ingDict)||!validMap(j.compDB)||!validMap(j.xDB))throw new Error('형식이 올바르지 않아요.');
+    for(const [group,obj] of [['nutDB',j.nutDB],['ingDict',j.ingDict],['compDB',j.compDB],['xDB',j.xDB]]){
+      if(!obj)continue;
+      for(const [k,v] of Object.entries(obj)){
+        if(typeof k!=='string'||k.length>300||['__proto__','prototype','constructor'].includes(k))throw new Error('백업 항목의 형식이 올바르지 않아요.');
+        if(group==='nutDB'||group==='xDB'){
+          if(!isObj(v))throw new Error('영양값 항목의 형식이 올바르지 않아요.');
+          for(const [nk,nv] of Object.entries(v))if(nv!==''&&(!Number.isFinite(Number(nv))||Number(nv)<0))throw new Error('영양값은 0 이상의 숫자여야 해요.');
+        }
+        if(group==='ingDict'&&(typeof v!=='string'||v.length>2000))throw new Error('영어 사전 값의 형식이 올바르지 않아요.');
+        if(group==='compDB'&&(typeof v!=='string'||v.length>5000))throw new Error('배합 정보 값의 형식이 올바르지 않아요.');
+      }
+    }
+    const next={nutDB:{...NV},ingDict:{...custom},compDB:{...COMP},xDB:{...XV}};
+    Object.entries(j.nutDB||{}).forEach(([k,v])=>next.nutDB[k]={...(next.nutDB[k]||{}),...v});
+    Object.assign(next.ingDict,j.ingDict||{});Object.assign(next.compDB,j.compDB||{});Object.entries(j.xDB||{}).forEach(([k,v])=>next.xDB[k]={...(next.xDB[k]||{}),...v});
+    const keys={nutDB:'nutDB',ingDict:'ingDict',compDB:'compDB',xDB:'xDB'},snap={};
+    try{
+      Object.values(keys).forEach(k=>{snap[k]=localStorage.getItem(k);});
+      Object.entries(keys).forEach(([group,key])=>localStorage.setItem(key,JSON.stringify(next[group])));
+    }catch(storageErr){Object.entries(snap).forEach(([k,v])=>{try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(ignore){}});throw new Error('저장 공간이 부족해 백업을 적용하지 못했어요. 기존 저장값은 복구를 시도했어요.');}
+    NV=next.nutDB;custom=next.ingDict;COMP=next.compDB;XV=next.xDB;
+    $('dbMsg').textContent=`불러왔어요: 영양값 ${Object.keys(j.nutDB||{}).length}개 재료, 영어 사전 ${Object.keys(j.ingDict||{}).length}개`;
+    nSig=null;compSig=null;fSig=null;calc();if(items.length)render();
+  }catch(x){$('dbMsg').textContent=x&&x.message?x.message:'파일을 읽지 못했어요. 이 도구에서 내보낸 JSON인지 확인해 주세요.';}}).catch(()=>{$('dbMsg').textContent='파일을 읽지 못했어요. JSON 파일인지 확인해 주세요.';});e.target.value='';};
 $('pubIn').onclick=()=>$('pubF').click();
-$('pubF').onchange=e=>{const f=e.target.files[0];if(!f)return;f.arrayBuffer().then(b=>{
+$('pubF').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>30*1024*1024){$('dbMsg').textContent='공공 영양DB 파일이 30MB를 넘어요. 필요한 열만 있는 CSV로 저장해 주세요.';e.target.value='';return;}f.arrayBuffer().then(b=>{
   const rd=o=>{const w=XLSX.read(b,Object.assign({type:'array'},o));return XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{header:1,defval:''});};
   let R=rd();if(!R.slice(0,10).some(r=>r.some(c=>/식품명/.test(c))))R=rd({codepage:949});
   const hi=R.slice(0,15).findIndex(r=>r.some(c=>/식품명/.test(c)));if(hi<0){$('dbMsg').textContent='“식품명” 열을 찾지 못했어요.';return;}
@@ -1164,8 +1230,11 @@ const FR=[['fat','Total Fat',78,'b'],['sat','Saturated Fat',20,'1'],['trans','Tr
 function fda(){const s=$('fSv');if(!s.value&&$('nTot').value){s.value=$('nTot').value;$('fU').value=$('nUnit').value;}fTable();fdaOut();}
 function fdaOut(){const box=$('fOut'),p=prod100();lastF=[];$('fCov').classList.add('hide');
   if(!p){box.innerHTML='<p class="msg">원재료명 탭에 엑셀을 넣거나, 영양정보 탭에서 값을 먼저 만들어 주세요.</p>';$('fChk').innerHTML='';return;}
-  const sv=+$('fSv').value,d=+$('nDens').value||1;if(!sv){box.innerHTML='<p class="msg">1회 제공량을 넣어 주세요.</p>';return;}
-  const sg=sv*($('fU').value==='mL'?d:1),A=k=>(p[k]||0)*sg/100,tg=(+$('nTot').value||0)*($('nUnit').value==='mL'?d:1),raw=+$('fSpc').value||(tg?tg/sg:1);
+  const sv=+$('fSv').value,d=+$('nDens').value,spcText=$('fSpc').value.trim();
+  if(!(sv>0)){box.innerHTML='<p class="msg">1회 제공량은 0보다 큰 숫자로 입력해 주세요.</p>';$('fChk').innerHTML='';return;}
+  if($('fU').value==='mL'&&!(d>0)){box.innerHTML='<p class="msg warn">액체의 비중은 0보다 큰 숫자로 입력해 주세요.</p>';$('fChk').innerHTML='';return;}
+  if(spcText&&!(+spcText>0)){box.innerHTML='<p class="msg warn">용기당 제공 횟수는 0보다 큰 숫자로 입력하거나 비워 두세요.</p>';$('fChk').innerHTML='';return;}
+  const sg=sv*($('fU').value==='mL'?d:1),A=k=>(p[k]||0)*sg/100,tg=(+$('nTot').value||0)*($('nUnit').value==='mL'?d:1),raw=spcText?+spcText:(tg?tg/sg:1);
   const sp=raw>=5?Math.round(raw):raw>=2?Math.round(raw*2)/2:Math.round(raw*10)/10,spT=(raw>=2&&Math.abs(sp-raw)>0.001?'about ':'')+sp+(sp===1?' serving':' servings')+' per container',svT=`${$('fHH').value||'1 serving'} (${Math.round(sv*10)/10}${$('fU').value})`;
   const cal=fr('cal',A('kcal'));
   const R=FR.map(([k,l,dv,f])=>{const v=A(k),r=fr(k,v),n=(typeof r.n==='number')?r.n:v,pct=dv?Math.round(n/dv*100):null,lab=k==='addsug'?`Includes ${r.t} Added Sugars`:`${l} ${r.t}`;return{k,l:lab,t:r.t,pct,f,r:r.r,v,name:l};});
