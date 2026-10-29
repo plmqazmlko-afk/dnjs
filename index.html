@@ -243,6 +243,7 @@ html:not(.edit) #goAl{display:none}
 <label class="chk"><input type="checkbox" id="alg" checked>알레르기 문구를 자동으로 찾아서 넣기</label>
 <label class="chk"><input type="checkbox" id="cap" checked>영어 첫 글자를 대문자로 정리</label>
 <label class="chk"><input type="checkbox" id="pct">배합비(%)를 원재료명 옆에 표시</label>
+<label class="chk"><input type="checkbox" id="flavorCode" checked>향 번호 표시 (향료명 옆에 괄호로 표시 · 해제하면 번호 제외)</label>
 <label class="chk"><input type="checkbox" id="org">원산지 함께 표시</label></details>
 <details id="colDetails"><summary>열이 잘못 잡혔나요? <small class="h">(선택)</small></summary>
 <p id="columnRecognition" class="msg">엑셀을 불러오면 인식한 열이 표시돼요.</p>
@@ -467,6 +468,13 @@ function detectTables(allRows){
   allRows.forEach((r,i)=>{
     if(!Array.isArray(r))return;
     const vals=r.map(v=>String(v??'').trim()).filter(Boolean);
+    // 총원가·원가계산·단가·금액 등 원가 관련 표는 원재료 변환 대상에서 제외
+    const costTitle=/총\s*원가|원가\s*(?:표|계산|내역|합계)|제조원가|재료비\s*합계|단가\s*표|costing|total\s*cost|unit\s*price/i;
+    const nearby=allRows.slice(Math.max(0,i-3),i+1).flat().map(v=>String(v??'').trim()).filter(Boolean);
+    if(nearby.some(v=>costTitle.test(v)))return;
+    const costCols=vals.some(v=>/^(?:총원가|원가|원가합계|단가|금액|비용|재료비|합계금액|cost|total cost|unit price)$/i.test(v));
+    const ingredientCue=vals.some(v=>/원재료명|원료명|재료명|배합비|배합량|함량|ingredients?|raw materials?/i.test(v));
+    if(costCols&&!ingredientCue)return;
     const score=vals.filter(v=>v.length<40&&key.test(v)).length;
     const nameHit=vals.some(v=>/원재료명|원료명|재료명|ingredients?|raw materials?/i.test(v));
     if(score>=2 || (nameHit&&score>=1)) candidates.push({i,score,vals});
@@ -519,13 +527,14 @@ function setRows(r){
   const isEn=c=>/영문|english|\beng\b/i.test(c), g=re=>h.findIndex(c=>re.test(c));
   cols.n=h.findIndex(c=>/원재료|원료|품명|재료|성분명/.test(c)&&!isEn(c));
   cols.e=h.findIndex(isEn);
-  cols.r=h.findIndex(c=>/배합|비율|함량|중량|%/.test(c)&&!isEn(c)&&!/수율|내용량/.test(c)&&!/열량|kcal|나트륨|탄수|당류|식이섬유|지방|단백|콜레스/i.test(c));
+  cols.f=h.findIndex(c=>/향\s*(?:번호|코드)|(?:flavou?r|flavour)\s*(?:no\.?|number|code|id)|(?:aroma|essence)\s*(?:no\.?|number|code)/i.test(c));
+  cols.r=h.findIndex(c=>/배합|비율|함량|중량|%/.test(c)&&!isEn(c)&&!/수율|내용량|향\s*(?:번호|코드)/i.test(c)&&!/(?:flavou?r|flavour)\s*(?:no\.?|number|code|id)/i.test(c)&&!/열량|kcal|나트륨|탄수|당류|식이섬유|지방|단백|콜레스/i.test(c));
   cols.s=g(/세부|복합|구성/); cols.o=g(/원산지/); cols.u=g(/용도/);
   const NH={kcal:/열량|kcal/i,na:/나트륨/,carb:/탄수화물/,sug:/당류/,fib:/식이섬유/,fat:/^(?!.*(포화|트랜스)).*지방/,sat:/포화/,trans:/트랜스/,chol:/콜레스테롤/,pro:/단백질/};
   cols.nut={}; Object.keys(NH).forEach(k=>{cols.nut[k]=h.findIndex(c=>NH[k].test(c)&&!isEn(c));});
   const data=rows.slice(hdr+1,hdr+41);
   const st=i=>{let k=0,e=0,n=0,t=0;data.forEach(x=>{const v=String(x[i]??'').trim();if(!v)return;t++;if(/[가-힣]/.test(v))k++;else if(/[A-Za-z]/.test(v))e++;else if(!isNaN(num(v)))n++;});return{k,e,n,t};};
-  const used=()=>[cols.n,cols.e,cols.r,cols.s,cols.o,cols.u,...Object.values(cols.nut)];
+  const used=()=>[cols.n,cols.e,cols.r,cols.s,cols.o,cols.u,cols.f,...Object.values(cols.nut)];
   const pk=f=>{let b=-1,bs=0;for(let i=0;i<w;i++){if(used().includes(i))continue;const sc=f(st(i));if(sc>bs){bs=sc;b=i;}}return b;};
   if(cols.e<0) cols.e=pk(s=>s.t&&s.e/s.t>=0.6&&s.e>=2?s.e:0);
   if(cols.n<0) cols.n=pk(s=>s.t&&s.k/s.t>=0.6?s.k:0);
@@ -537,13 +546,15 @@ function setRows(r){
   build();
 }
 [['cN','n'],['cE','e'],['cR','r'],['cS','s'],['cO','o'],['cU','u']].forEach(([id,k])=>$(id).onchange=()=>{cols[k]=+$(id).value;build();});
-['sort','org','pct','alg','cap'].forEach(id=>$(id).onchange=()=>{if(items.length)render();});
+['sort','org','pct','alg','cap','flavorCode'].forEach(id=>$(id).onchange=()=>{if(items.length){if(id==='flavorCode'){build();}else render();}});
 
 function build(){
   const g=(r,i)=>i>=0?String(r[i]??'').trim():'';
+  const flavorName=(name,code)=>{let nm=String(name||'').trim(),cd=String(code||'').trim();const isFlavor=/향료|향\s*$/i.test(nm)||/flavou?r|flavour|aroma|essence/i.test(nm);if(!isFlavor)return nm;const embedded=nm.match(/(향료?|flavou?r|flavour|aroma|essence)\s*[（(\[＃#:_-]?\s*([A-Za-z0-9][A-Za-z0-9._/-]*)\s*[）)\]]?/i);if(!cd&&embedded)cd=embedded[2];if(embedded)nm=nm.replace(embedded[0],embedded[1]);if(!$('flavorCode').checked)return nm.replace(/\s*[（(\[＃#:_-]?\s*\d{2,}[）)\]]?/g,'').trim();return cd?`${nm} (${cd})`:nm;};
   items=[]; scaled=false; meta={};
   rows.slice(hdr+1).forEach(r=>{
-    const ko=g(r,cols.n),en=g(r,cols.e),name=ko||en; if(!name) return;
+    let ko=g(r,cols.n),en=g(r,cols.e);const flavorCode=g(r,cols.f);
+    ko=flavorName(ko,flavorCode);en=flavorName(en,flavorCode);const name=ko||en; if(!name) return;
     const v=cols.r>=0?num(r[cols.r]):NaN, bad=EXC.test(ko)||EXC.test(en)||/^(원료명|원재료명|재료명|원료|원재료|재료|성분명|ingredients?|raw\s*materials?|합계|소계|총계|계|total|subtotal|sum)$/i.test(name.trim());
     if(/내용량|수율/.test(name)){let cv=cols.r>=0?num(r[cols.r]):NaN;if(isNaN(cv))cv=r.map((x,i)=>i===cols.n||i===cols.e?NaN:num(x)).find(x=>!isNaN(x));if(isNaN(cv))cv=num(name);
       if(!isNaN(cv)){if(/수율/.test(name))meta.yield=cv;else{meta.content=cv;meta.unit=/\(\s*g\s*\)|\d\s*g\b/i.test(name)?'g':'mL';}}}
@@ -561,8 +572,10 @@ function build(){
 }
 
 function cleanFlavorCode(s){
-  // '향' 뒤에 붙는 3자리 이상 숫자형 내부 코드만 제거
-  return String(s??'').replace(/(향)\s*[\(\[\{#:_\-]?\s*\d{3,}\s*[)\]]?/g,'$1');
+  // 향 번호 표시 옵션이 켜져 있으면 보존하고, 꺼져 있으면 숫자형 내부 코드를 제거
+  const v=String(s??'');
+  if($('flavorCode')&&$('flavorCode').checked)return v;
+  return v.replace(/(향)\s*[\(\[\{#:_\-]?\s*\d{2,}\s*[)\]]?/g,'$1').replace(/(flavou?r|flavour|aroma|essence)\s*[\(\[\{#:_\-]?\s*[A-Z0-9][A-Z0-9._/-]{1,}\s*[)\]]?/ig,'$1');
 }
 function tr1(t,d){
   t=cleanFlavorCode(t).trim();
@@ -1487,7 +1500,7 @@ const _qualityRender=render;render=function(){_qualityRender();refreshQualityToo
 // 추가 도구: 열 인식 상태, 원재료 검증, 국가별 초안 출력, CSV 내보내기
 function showColumnRecognition(headers){
  const el=$('columnRecognition'); if(!el)return;
- const names=[['원재료명',cols.n],['영문명',cols.e],['배합비/함량',cols.r],['세부원료',cols.s],['원산지',cols.o],['용도',cols.u]];
+ const names=[['원재료명',cols.n],['영문명',cols.e],['배합비/함량',cols.r],['향 번호',cols.f],['세부원료',cols.s],['원산지',cols.o],['용도',cols.u]];
  el.textContent='자동 인식 열: '+names.map(([n,i])=>n+' = '+(i>=0?(headers[i]||('열 '+(i+1))):'미인식')).join(' · ');
 }
 function refreshQualityTools(){
