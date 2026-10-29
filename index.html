@@ -93,7 +93,7 @@ h2{font-size:18px}h2 small,small.h{font-weight:400;color:var(--mu);font-size:13p
 .how{display:flex;gap:10px;flex-wrap:wrap;list-style:none;padding:0;margin:16px 0 18px;counter-reset:s}
 .how li{flex:1 1 210px;background:var(--soft);border-radius:12px;padding:12px 14px;font-size:15px;display:flex;gap:10px;align-items:flex-start;counter-increment:s}
 .how li::before{content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;background:var(--ac);color:var(--on);font-weight:700;font-size:14px;display:grid;place-items:center}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .tabs button{margin:0;min-height:68px;text-align:left;padding:12px 14px;border-radius:12px;background:var(--card);color:var(--tx);border:1.5px solid var(--bd);display:flex;flex-direction:column;gap:2px;font-weight:400}
 .tabs button b{font-size:16px}.tabs button small{font-size:13px;color:var(--mu);line-height:1.4}
 .tabs button:hover:not(.on){border-color:var(--ac)}
@@ -175,32 +175,76 @@ tr.off td{color:#77837b}
 .nc th,.nc td{font-size:16px;padding:11px 13px;line-height:1.45}
 .nc th{font-size:15px}
 .fda{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.importbox button{margin:4px 0;font-weight:700}
+.importbox .msg{margin:6px 0 0}
 @media(max-width:900px){main{padding:20px 14px 56px}.lay,.lay.w{grid-template-columns:minmax(0,1fr)}.side.st{position:static}.cols2{grid-template-columns:1fr}}
 @media(max-width:700px){.tabs{grid-template-columns:1fr 1fr}.tabs button{min-height:74px;padding:11px 12px}.tabs button b{font-size:16px}.tabs button small{font-size:12px}section,details{padding:16px}.how li{flex-basis:100%}.nc{max-width:100%}}
 @media(max-width:420px){h1{font-size:27px}.tabs{gap:7px}.tabs button{min-height:70px}.nc .nh{font-size:27px}.nc th,.nc td{font-size:13px;padding:9px 7px}}
 
+
+/* ===== 다크 모드 가독성 보정 ===== */
+@media (prefers-color-scheme:dark){
+:root:not([data-theme="light"]) .tip{background:var(--soft);border-color:var(--bd)}
+:root:not([data-theme="light"]) .tw tr:nth-child(even){background:rgba(255,255,255,.04)}
+:root:not([data-theme="light"]) .tw tr:hover td{background:rgba(255,255,255,.08)}
+:root:not([data-theme="light"]) .unkrow{background:var(--card)}
+:root:not([data-theme="light"]) .importbox{background:var(--soft)!important;border-color:var(--bd)!important}
+}
+
+/* ===== 간단 화면 ===== */
+main{padding-top:16px}
+.head{margin-bottom:6px}
+h1{font-size:clamp(24px,2.6vw,30px);margin-bottom:2px}
+.sub{font-size:14px;margin-bottom:6px}
+.tabs{position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 0 10px;margin:0 0 6px;gap:8px}
+.tabs button{min-height:46px;padding:8px 12px;box-shadow:none;justify-content:center}
+.tabs button small{display:none}
+.tabs button b{font-size:16px}
+.intro{margin:4px 2px 12px;font-size:14px}
+section,details{padding:14px 16px;margin-bottom:12px}
+.lay{gap:14px}
+summary .h,small.h{font-weight:400;color:var(--mu);font-size:13px;margin-left:6px}
+details>summary{font-size:15px;font-weight:650;color:var(--tx)}
+details[open]>summary{margin-bottom:10px}
+section details.more{padding:0;border:0;box-shadow:none;background:none}
+.drop{padding:20px 12px;margin-bottom:10px}
+#sheetBox{margin:4px 0 12px}
+#sheetBox label{margin-top:0}
+.cols2 textarea{min-height:140px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 14px}
+.pk{max-width:1100px;margin:0 auto}
+.pk3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.pk3 textarea{min-height:240px!important}
+@media(max-width:1000px){.pk3{grid-template-columns:1fr}}
+@media(max-width:800px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.g3{grid-template-columns:1fr}}
+@media(max-width:700px){.tabs{display:flex;overflow-x:auto;gap:6px}.tabs button{flex:0 0 auto;min-height:44px;white-space:nowrap}}
+
+/* ===== 일반 방문자: 원재료명 탭만 (#edit 로 열면 전체) ===== */
+html:not(.edit) .tabs{display:none}
+html:not(.edit) #goAl{display:none}
 </style>
 </head>
 <body>
 <main>
-<div class="head"><h1>원재료명 변환기</h1><p class="sub">엑셀 파일을 넣으면 제품 뒷면에 쓸 원재료명을 한글과 영어로 만들어 드려요. 내용은 이 컴퓨터 밖으로 나가지 않아요.</p>
-<ol class="how"><li>엑셀 파일을 넣어요</li><li>만들어진 문구를 확인해요</li><li>복사해서 라벨에 붙여넣어요</li></ol></div>
-<nav class="tabs"><button class="on"><b>원재료명</b><small>라벨 뒷면에 쓰는 원재료 문구</small></button><button><b>알레르기</b><small>알레르기 유발물질 표시</small></button><button><b>영양정보</b><small>한국 영양성분 표</small></button><button><b>미국 수출</b><small>FDA 영양표 (Nutrition Facts)</small></button></nav>
+<div class="head"><h1>원재료명 변환기</h1>
+</div>
+<nav class="tabs"><button class="on"><b>원재료명</b><small>라벨 뒷면에 쓰는 원재료 문구</small></button><button><b>알레르기</b><small>알레르기 유발물질 표시</small></button><button><b>영양정보</b><small>한국 영양성분 표</small></button><button><b>미국 수출</b><small>FDA 영양표 (Nutrition Facts)</small></button><button><b>패키지 표시사항</b><small>국내·미국·EU 문안 작성</small></button></nav>
 <p id="intro" class="intro"></p>
 <div id="p1" class="lay">
 <div class="side st">
-<section><h2>1. 엑셀 파일 넣기</h2>
+<section><h2>엑셀 파일 넣기</h2>
 <div id="drop" class="drop"><b>엑셀 파일 고르기</b><br><span>여기를 누르거나, 파일을 이 칸으로 끌어다 놓으세요<br>.xlsx · .xls · .csv 파일이 가능해요</span><input type="file" id="file" accept=".xlsx,.xls,.csv" hidden></div>
-<details><summary>엑셀 파일은 이렇게 만들어요</summary><p class="msg">첫 줄에 열 이름을 쓰고, 아래로 재료를 한 줄에 하나씩 적어요. 열 이름이 조금 달라도 알아서 찾아요.</p><div class="tw"><table class="eg"><tr><th>원재료명</th><th>영문명</th><th>배합비(%)</th></tr><tr><td>정제수</td><td>Water</td><td>70</td></tr><tr><td>설탕</td><td>Sugar</td><td>15</td></tr></table></div></details>
+<div id="sheetBox" class="hide"><label for="sheet">사용할 시트 <small class="h" id="sheetCnt"></small></label><select id="sheet"></select></div>
 <details><summary>엑셀에서 복사해서 붙여넣기</summary><p class="msg">엑셀에서 표를 드래그로 선택 → Ctrl+C → 아래 칸을 누르고 Ctrl+V</p><textarea id="paste" style="min-height:90px"></textarea></details></section>
-<section><h2>2. 옵션 고르기 <small>그대로 두어도 돼요</small></h2>
+<details class="opts"><summary>옵션 바꾸기 <small class="h">정렬·알레르기·대문자 등 · 그대로 두어도 돼요</small></summary>
 <label class="chk"><input type="checkbox" id="sort" checked>배합비 많은 순으로 정렬</label>
 <label class="chk"><input type="checkbox" id="alg" checked>알레르기 문구를 자동으로 찾아서 넣기</label>
 <label class="chk"><input type="checkbox" id="cap" checked>영어 첫 글자를 대문자로 정리</label>
 <label class="chk"><input type="checkbox" id="pct">배합비(%)를 원재료명 옆에 표시</label>
-<label class="chk"><input type="checkbox" id="org">원산지 함께 표시</label></section>
-<details><summary>이름이나 비율이 엉뚱하게 잡혔나요?</summary>
-<label>시트</label><select id="sheet"></select>
+<label class="chk"><input type="checkbox" id="org">원산지 함께 표시</label></details>
+<details id="colDetails"><summary>열이 잘못 잡혔나요? <small class="h">(선택)</small></summary>
+<p id="columnRecognition" class="msg">엑셀을 불러오면 인식한 열이 표시돼요.</p>
 <label>한글 원재료명이 있는 열</label><select id="cN"></select>
 <label>영문 원재료명이 있는 열</label><select id="cE"></select>
 <label>배합비(%)가 있는 열</label><select id="cR"></select>
@@ -209,23 +253,31 @@ tr.off td{color:#77837b}
 <label>용도(감미료·보존료 등)가 있는 열</label><select id="cU"></select></details>
 </div>
 <div>
-<div id="empty" class="ph"><h2>아직 파일이 없어요</h2><p>“1. 엑셀 파일 넣기”에서 파일을 고르면 이 자리에 결과가 바로 나와요.</p><ol><li>엑셀 파일을 골라요.</li><li>한글·영어 문구를 확인해요. 고칠 곳은 칸에서 바로 고쳐요.</li><li>복사하기를 눌러 라벨 디자인에 붙여넣어요.</li></ol><button id="sampleBtn">예시 파일로 먼저 써 보기</button></div>
+<div id="empty" class="ph"><h2>아직 파일이 없어요</h2><p>엑셀 파일을 고르면 결과가 여기에 바로 나와요.</p><button id="sampleBtn">예시 파일로 먼저 써 보기</button></div>
 <div id="res" class="hide">
 <div class="tip"><span><b>만들어졌어요.</b> 문구를 확인하고, 고칠 곳은 칸에서 바로 고친 뒤 <b>복사하기</b>를 누르세요.</span><button class="g" id="goAl">다음: 알레르기 확인</button></div>
 <div id="note" class="msg" style="margin-top:0"></div>
+
 <div class="cols2">
 <section><h2>한글 원재료명</h2><textarea id="ko"></textarea><button id="cpKo">복사하기</button></section>
 <section><h2>English</h2><textarea id="en"></textarea><button id="cpEn">Copy</button>
 <div id="trMsg" class="msg"></div>
 <div id="unkBox" class="hide"><h2 style="margin-top:12px">영어를 모르는 단어</h2><div id="unkList"></div><button id="apply">영어를 저장하고 다시 만들기</button></div></section>
 </div>
-<section><h2>재료 확인</h2><p class="msg">체크된 재료만 위 문구에 들어가요. 내용량·수율 같은 항목은 자동으로 뺐고, 체크로 바꿀 수 있어요.</p><div class="tw"><table id="tbl"></table></div></section>
-<section id="addBox"><h2>첨가물 용도 점검</h2><div id="addBody"></div></section>
+<details><summary>재료 확인 · 빼거나 넣기 <small class="h">체크된 재료만 문구에 들어가요</small></summary><div class="tw"><table id="tbl"></table></div></details>
+<details id="addBox"><summary>첨가물 용도 점검</summary><div id="addBody"></div></details>
+<details id="qualityTools"><summary>검증 · 정렬 · 국가별 출력 <b id="qtSum" class="h"></b></summary>
+<div class="g2"><div><label for="labelCountry">출력 형식</label><select id="labelCountry"><option value="kr">한국 표시용</option><option value="us">미국 수출용 초안</option><option value="eu">EU 수출용 초안</option></select></div><div><label>원재료 정렬</label><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="g" id="sortDesc">배합비 높은 순</button><button type="button" class="g" id="sortOriginal">원본 순서</button></div></div></div>
+<p class="msg">국가별 출력은 문구 형식을 바꾸는 초안이며, 국가별 법규 적합성을 자동 보증하지 않아요. 수출 전 현지 규정과 공급사 자료를 확인하세요.</p>
+<div id="validationResult" class="msg" aria-live="polite">엑셀을 불러오면 검증 결과가 표시돼요.</div>
+<div id="countryPreview" class="tw" style="padding:12px;white-space:pre-wrap;overflow-wrap:anywhere"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="copyCountry">표시 문구 복사</button><button type="button" class="g" id="exportCsv">원재료 결과 CSV 저장</button></div>
+</details>
 </div></div></div>
 
 <div id="p2" class="lay hide">
 <div class="side">
-<section><h2>알레르기 항목 체크</h2><p class="msg">엑셀의 원재료 이름을 보고 자동으로 체크해 놨어요. 틀린 건 직접 고치세요. 고치면 원재료명 탭의 문구에도 바로 반영돼요. <b class="warn">이 자동체크는 한국 표시 대상 중심이에요. 미국 수출용은 참깨·생선 종류·견과류 등 FDA 기준과 원료 규격서를 별도로 확인하세요.</b></p>
+<section><h2>알레르기 항목 체크</h2><p class="msg">엑셀의 원재료 이름으로 자동 체크했어요. 틀린 건 직접 고치면 원재료명 탭에도 바로 반영돼요. <b class="warn">한국 표시 기준이에요. 미국 수출용은 FDA 기준을 따로 확인하세요.</b></p>
 <label>① 원재료로 사용한 것 (함유)</label><div id="aHas" class="g2"></div>
 <label style="margin-top:12px">② 원재료는 아니지만 같은 제조시설·라인에서 다루는 것 (혼입 가능성)</label><div id="aMay" class="g2"></div></section>
 </div>
@@ -255,6 +307,7 @@ tr.off td{color:#77837b}
 <details style="margin:8px 0 0;padding:10px"><summary>수율 자동 계산 (투입량 ÷ 완제품량)</summary><div class="g2"><div><label>원료 투입 총량 (g)</label><input class="t" type="number" step="any" id="yIn"></div><div><label>완제품 생산량 (g)</label><input class="t" type="number" step="any" id="yOut"></div></div><button class="g" id="yGo">수율에 적용</button><p class="msg">가열·농축으로 수분이 날아가면 완제품이 가벼워져서 100g당 영양값이 올라가요. 실제 생산 기록을 넣으면 수율(%)을 계산해 위 칸에 넣어요.</p></details></section>
 <section><h2>영양성분 값</h2>
 <p class="msg">시험성적서나 계산해 둔 값을 넣으면 규정에 맞게 반올림하고 1일 기준치 %까지 계산해요.</p>
+<div class="importbox" style="border:1px solid #d8dee8;background:#f8fafc;border-radius:10px;padding:12px;margin:10px 0"><b>엑셀에서 영양성분 가져오기</b><p class="msg">함량·1일 기준치 비율이 들어 있는 엑셀/CSV를 선택하면 열 이름을 찾아 가져와요. 파일에 있는 값만 반영합니다.</p><button type="button" class="g" id="nutExcelBtn">영양성분 엑셀 선택</button><input type="file" id="nutExcelFile" accept=".xlsx,.xls,.csv" hidden><div id="nutSheetBox" class="hide" style="margin-top:8px"><label for="nutSheet" style="margin-top:0">사용할 시트</label><select id="nutSheet"></select></div><span id="nutImportMsg" class="msg" style="display:block"></span></div>
 <div class="g2">
 <div><label>총 내용량</label><div style="display:flex;gap:6px"><input class="t" type="number" step="any" id="nTot" style="flex:1"><select id="nUnit" style="width:80px"><option>mL</option><option>g</option></select></div></div>
 <div><label>입력한 값의 기준</label><select id="nBasis"><option value="total">총 내용량당 (원칙)</option><option value="100">100 g(mL)당</option><option value="sv">1회 제공량당</option></select></div>
@@ -265,18 +318,18 @@ tr.off td{color:#77837b}
 </div>
 <div>
 <section id="nTblBox" class="hide"><h2>재료별 영양성분 (100g당)</h2>
-<p class="msg">배합비 × 이 값으로 완제품 영양성분을 계산해요. <b>“참고값”은 식품성분표·USDA 일반 평균값이라 실제 원료와 다를 수 있어요.</b> 시럽·분유·치즈처럼 제품마다 차이가 큰 원료는 규격서 값으로 꼭 바꿔 주세요. <b>제품 고유 원료(두유, 크림파우더, 안정제 등)는 공급사 성적서·규격서 값을 넣어 주세요.</b> 넣은 값은 이 브라우저에 저장돼서 다음에 같은 이름이면 자동으로 채워져요.</p>
+<p class="msg">배합비 × 이 값으로 완제품 영양성분을 계산해요. “참고값”은 일반 평균값이라 실제 원료와 다를 수 있어요. 가능하면 공급사 성적서·규격서 값으로 바꿔 주세요. 넣은 값은 이 브라우저에 저장돼요.</p>
 <div class="tw"><table id="nTbl"></table></div>
-<div id="srchBox" style="margin-top:14px"><h2>영양값 검색 (공공DB·내장 참고값)</h2><div style="display:flex;gap:6px"><select id="srTgt" style="flex:1"></select><input class="t" id="srQ" placeholder="식품 이름 (예: 아몬드, 탈지분유)" style="flex:2"></div><div id="srRes" class="msg"></div></div>
+<details class="more"><summary>더 정확하게 계산하기 <small class="h">영양값 검색 · 복합원재료 · 내 DB</small></summary><div id="srchBox" style="margin-top:14px"><h2>영양값 검색 (공공DB·내장 참고값)</h2><div style="display:flex;gap:6px"><select id="srTgt" style="flex:1"></select><input class="t" id="srQ" placeholder="식품 이름 (예: 아몬드, 탈지분유)" style="flex:2"></div><div id="srRes" class="msg"></div></div>
 <div id="compBox" style="margin-top:14px"><h2>복합원재료 구성으로 영양성분 계산</h2><p class="msg">소스·분말믹스처럼 여러 원료가 섞인 재료는 성적서가 없어도 구성 비율로 100g당 값을 계산할 수 있어요. 엑셀의 세부원재료 칸에 “탈지분유 60%, 설탕 30%”처럼 비율이 적혀 있으면 값이 없는 재료 옆에 <b>세부원재료로 계산</b> 버튼이 나와요.</p><select id="compSel"></select><textarea id="compTxt" placeholder="탈지분유 60, 설탕 30, 정제염 10 (합이 100%가 되게)"></textarea><button id="compGo">구성으로 계산해서 적용</button><button class="g" id="compDel">구성 지우기</button><div id="compMsg" class="msg"></div></div>
-<div><button class="g" id="dbOut">내 영양값 내보내기(JSON)</button><button class="g" id="dbIn">내 영양값 불러오기</button><button class="g" id="pubIn">공공 영양DB 불러오기(CSV·엑셀)</button><input type="file" id="dbF" accept=".json" hidden><input type="file" id="pubF" accept=".csv,.xlsx,.xls" hidden><p class="msg" id="dbMsg">공공 영양DB: 식품안전나라 식품영양성분 DB에서 받은 CSV·엑셀 파일(식품명, 에너지, 단백질, 지방, 탄수화물, 당류, 나트륨 열 포함)을 넣으면 이름이 같은 재료에 자동으로 채워져요.</p></div></section>
+<div><button class="g" id="dbOut">내 영양값 내보내기(JSON)</button><button class="g" id="dbIn">내 영양값 불러오기</button><button class="g" id="pubIn">공공 영양DB 불러오기(CSV·엑셀)</button><input type="file" id="dbF" accept=".json" hidden><input type="file" id="pubF" accept=".csv,.xlsx,.xls" hidden><div id="pubSheetBox" class="hide" style="margin-top:8px"><label for="pubSheet" style="margin-top:0">사용할 시트</label><select id="pubSheet"></select></div><p class="msg" id="dbMsg">공공 영양DB: 식품안전나라 식품영양성분 DB에서 받은 CSV·엑셀 파일(식품명, 에너지, 단백질, 지방, 탄수화물, 당류, 나트륨 열 포함)을 넣으면 이름이 같은 재료에 자동으로 채워져요.</p></div></details></section>
 <div id="nCov" class="cov hide"></div>
 <div class="cols2" id="nOutBox">
 <section><h2>한글 표</h2><div id="nKo"></div><button id="cpNK">문구 복사</button></section>
 <section><h2>English</h2><div id="nEn"></div><button id="cpNE">Copy</button></section></div>
 <section><h2>저장하기</h2><button id="xOut">원재료명·알레르기·영양정보 엑셀로 저장</button><button class="g" id="pngK">한글 표 PNG</button><button class="g" id="pngE">English PNG</button></section>
-<section><h2>값 확인 · 시험성적서 비교</h2><p class="msg">오른쪽 칸에 시험성적서 값(위 표와 같은 기준)을 넣으면 허용 오차 안인지 알려줘요.</p><div class="tw"><table id="nChk"></table></div></section>
-<section id="nClaim"><h2>영양강조표시 가능 여부 (참고용)</h2><div id="nClaimBody"></div></section>
+<details><summary>시험성적서와 비교하기 <small class="h">허용 오차 확인</small></summary><p class="msg">오른쪽 칸에 시험성적서 값(위 표와 같은 기준)을 넣으면 허용 오차 안인지 알려줘요.</p><div class="tw"><table id="nChk"></table></div></details>
+<details id="nClaim"><summary>영양강조표시 가능 여부 <small class="h">참고용</small></summary><div id="nClaimBody"></div></details>
 <details class="gd"><summary>영양정보 표, 이렇게 써야 해요 (규정 요약)</summary>
 <ul><li><b>순서</b>: 열량 → 나트륨 → 탄수화물(당류) → 지방(트랜스지방, 포화지방) → 콜레스테롤 → 단백질. 총 내용량당 표시가 원칙이고 100g(mL)당, 단위 내용량당을 함께 써도 돼요.</li>
 <li><b>%</b>는 “1일 영양성분 기준치에 대한 비율”이고 정수로 반올림해요. <b>열량과 트랜스지방은 %를 쓰지 않아요.</b></li>
@@ -306,17 +359,43 @@ tr.off td{color:#77837b}
 <section id="fTblBox" class="hide"><h2>재료별 첨가당·칼륨·칼슘·철·비타민D (100g당)</h2><p class="msg">미국 표에 필수인 항목이에요. 한국 표에는 없는 값이라 별도로 넣어요. “참고값”은 USDA 일반 평균치이니 <b>성적서·규격서 값</b>으로 바꿔 주세요. 첨가당은 설탕·시럽·꿀처럼 감미료로 보이는 재료만 자동 반영하고, 초콜릿·잼·가당연유·농축과즙은 직접 넣어야 해요.</p><div class="tw"><table id="fTbl"></table></div></section>
 <div id="fCov" class="cov hide"></div>
 <section><h2>Nutrition Facts (US FDA)</h2><div id="fOut"></div></section>
-<section><h2>값 확인</h2><div class="tw"><table id="fChk"></table></div></section>
+<details><summary>값 확인</summary><div class="tw"><table id="fChk"></table></div></details>
 <details class="gd"><summary>미국 영양표시, 한국과 이렇게 달라요</summary><ul><li><b>항목</b>: 열량(Calories), 지방·포화지방·트랜스지방, 콜레스테롤, 나트륨, 탄수화물(식이섬유, 총당류, 첨가당), 단백질, 비타민D·칼슘·철·칼륨 순이에요. 단백질은 %를 쓰지 않아도 되고, 트랜스지방·총당류는 %가 없어요.</li>
 <li><b>반올림</b>: 열량 5미만 0 / 50 이하 5단위 / 50 초과 10단위. 지방류 0.5g 미만 0, 5g 미만 0.5g 단위, 그 이상 1g 단위. 콜레스테롤 2mg 미만 0, 2~5mg “less than 5mg”, 그 이상 5mg 단위. 나트륨 5mg 미만 0, 140mg 이하 5mg 단위, 초과 10mg 단위. 탄수화물·식이섬유·당류·단백질 0.5g 미만 0, 1g 미만 “less than 1g”, 그 이상 1g 단위. 비타민D 0.1mcg, 칼슘 10mg, 철 0.1mg, 칼륨 10mg 단위.</li>
 <li><b>기준치(DV)</b>: 지방 78g, 포화지방 20g, 콜레스테롤 300mg, 나트륨 2,300mg, 탄수화물 275g, 식이섬유 28g, 첨가당 50g, 비타민D 20mcg, 칼슘 1,300mg, 철 18mg, 칼륨 4,700mg. %는 정수로 반올림해요.</li>
 <li>한국과 달리 “1일 영양성분 기준치”가 아니라 “% Daily Value”이고, 각주도 문구가 달라요. 이 밖에 알레르기(미국은 9종: 우유·계란·생선·갑각류·견과·땅콩·밀·대두·참깨), 원재료 표기 순서, 제품 유형별 규정은 수출 전에 FDA 규정(21 CFR 101)과 수입자·라벨 전문가 확인이 필요해요.</li></ul></details>
 </div></div>
+<div id="p5" class="pk hide">
+<section><h2>제품 기본정보 <small class="h">비워 둔 칸은 문안에서 빠져요</small></h2>
+<div class="g3">
+<div><label>제품명 (국문)</label><input class="t" id="pkgNameKo" placeholder="예: 구운 옥수수 라떼"></div>
+<div><label>제품명 (영문)</label><input class="t" id="pkgNameEn" placeholder="예: Roasted Corn Latte"></div>
+<div><label>식품유형 (국내 표시 기준)</label><input class="t" id="pkgType" placeholder="예: 혼합음료"></div>
+<div><label>내용량</label><input class="t" id="pkgNet" placeholder="예: 250 mL"></div>
+<div><label>제조업소·소재지</label><input class="t" id="pkgMaker" placeholder="확인된 업체명 및 주소"></div>
+<div><label>유통전문판매원·소재지 (해당 시)</label><input class="t" id="pkgDistributor" placeholder="해당하는 경우 입력"></div>
+<div><label>보관방법</label><input class="t" id="pkgStorage" placeholder="예: 직사광선을 피하고 실온 보관"></div>
+<div><label>소비기한 / 날짜 표시 안내</label><input class="t" id="pkgDate" placeholder="예: 별도 표기일까지"></div>
+<div><label>포장재질 (확인된 경우)</label><input class="t" id="pkgMaterial" placeholder="예: 폴리에틸렌(내면)"></div>
+<div><label>품목보고번호 (해당 시)</label><input class="t" id="pkgReport" placeholder="번호 입력"></div>
+<div><label>고객상담 연락처</label><input class="t" id="pkgContact" placeholder="전화번호 등"></div>
+<div><label>제조국 / 원산지 정보 (해당 시)</label><input class="t" id="pkgOrigin" placeholder="확인된 정보만 입력"></div>
+</div></section>
+<details class="more"><summary>원재료명 · 알레르기 문구 <small class="h">다른 탭에서 자동으로 가져와요 · 고칠 수 있어요</small></summary>
+<div class="g2"><div><label>국문 원재료명</label><textarea id="pkgIngredientsKo" placeholder="원재료명 탭 결과가 자동으로 연결돼요."></textarea><button type="button" class="g" id="pkgSyncKo">원재료명 탭에서 다시 가져오기</button></div><div><label>영문 Ingredients</label><textarea id="pkgIngredientsEn" placeholder="영문 원재료명 탭 결과가 자동으로 연결돼요."></textarea><button type="button" class="g" id="pkgSyncEn">다시 가져오기</button></div><div><label>국문 알레르기 문구</label><textarea id="pkgAllergenKo" placeholder="알레르기 탭 결과가 자동으로 연결돼요."></textarea><button type="button" class="g" id="pkgSyncAKo">알레르기 탭에서 다시 가져오기</button></div><div><label>영문 알레르기 문구</label><textarea id="pkgAllergenEn" placeholder="알레르기 탭 결과가 자동으로 연결돼요."></textarea><button type="button" class="g" id="pkgSyncAEn">다시 가져오기</button></div></div></details>
+<section><h2>판매 시장 선택</h2><div class="g2"><label class="chk"><input type="checkbox" id="pkgUseKR" checked> 국내용 문안 생성</label><label class="chk"><input type="checkbox" id="pkgUseUS" checked> 미국용 문안 생성</label><label class="chk"><input type="checkbox" id="pkgUseEU" checked> EU용 문안 생성</label></div><p class="msg">초안 작성용이에요. 법적 적합성은 보증하지 않으니 인쇄 전에 규정을 확인하세요.</p><button id="pkgGenerate">표시사항 초안 만들기</button> <button class="g" id="pkgRefresh">입력값 다시 확인</button></section>
+<div class="pk3"><section><h2>국내용 표시사항 초안</h2><textarea id="pkgOutKR" style="min-height:180px" placeholder="국내용 초안이 여기에 표시돼요."></textarea><button class="g" id="pkgCopyKR">국내용 복사</button></section>
+<section><h2>미국 수출용 초안</h2><textarea id="pkgOutUS" style="min-height:180px" placeholder="미국용 초안이 여기에 표시돼요."></textarea><button class="g" id="pkgCopyUS">미국용 복사</button></section>
+<section><h2>EU 수출용 초안</h2><textarea id="pkgOutEU" style="min-height:180px" placeholder="EU용 초안이 여기에 표시돼요."></textarea><button class="g" id="pkgCopyEU">EU용 복사</button></section>
+</div>
+<details class="more"><summary>최종 검수 체크리스트 · 저장</summary><div id="pkgChecks" class="msg">초안을 만들면 입력 누락과 확인할 항목을 표시해요.</div><button id="pkgExport">표시사항 초안 TXT 저장</button></details>
+</div>
+
 </main>
 
 <script>
-const AL=[['알류',/계란|달걀|난백|난황|전란|난액/],['우유',/우유|분유|유청|버터|치즈|크림|카제인|연유/],['메밀',/메밀/],['땅콩',/땅콩/],['대두',/대두|콩|두유|간장|된장|두부/],['밀',/밀(?!크)|소맥|글루텐/],['고등어',/고등어/],['게',/꽃게|대게|게살/],['새우',/새우/],['돼지고기',/돼지/],['복숭아',/복숭아/],['토마토',/토마토/],['아황산류',/아황산|이산화황/],['호두',/호두/],['닭고기',/닭/],['쇠고기',/쇠고기|소고기/],['오징어',/오징어/],['조개류',/조개|굴|전복|홍합/],['잣',/잣/]];
-const BASE={'고형분':'Solids','고형물':'Solids','고형분 함량':'Solids Content','유고형분':'Milk Solids','무지유고형분':'Milk Solids-Nonfat','유지방':'Milk Fat'};
+const AL=[['알류',/계란|달걀|난백|난황|전란|난액/],['우유',/우유|분유|유청|(?<!코코아|카카오|땅콩|견과|아몬드|시어)버터|치즈|(?<!코코넛|식물성)크림|카제인|연유|요거트|요구르트|요플레|발효유|유당|락토오스|락토스|(?<!코코넛|아몬드|오트|귀리|쌀|두)밀크/],['메밀',/메밀/],['땅콩',/땅콩/],['대두',/대두|(?<!땅|완두|강낭)콩|두유|간장|된장|두부/],['밀',/밀(?!크)|소맥|글루텐/],['고등어',/고등어/],['게',/꽃게|대게|게살/],['새우',/새우/],['돼지고기',/돼지/],['복숭아',/복숭아/],['토마토',/토마토/],['아황산류',/아황산|이산화황/],['호두',/호두/],['닭고기',/닭/],['쇠고기',/쇠고기|소고기/],['오징어',/오징어/],['조개류',/조개|굴|전복|홍합/],['잣',/잣/]];
+const BASE={'고형분':'Solids Content','고형물':'Solids','고형분 함량':'Solids Content','유고형분':'Milk Solids','무지유고형분':'Milk Solids-Nonfat','유지방':'Milk Fat'};
 `설탕|Sugar;정제수|Water;물|Water;물엿|Glucose Syrup;올리고당|Oligosaccharide;액상과당|High Fructose Corn Syrup;포도당|Glucose;과당|Fructose;꿀|Honey;벌꿀|Honey;알룰로스|Allulose;에리스리톨|Erythritol;수크랄로스|Sucralose;아스파탐|Aspartame;스테비아|Stevia;소르비톨|Sorbitol;자일리톨|Xylitol;흑설탕|Brown Sugar;황설탕|Brown Sugar;조청|Grain Syrup;
 밀가루|Wheat Flour;박력분|Soft Wheat Flour;강력분|Hard Wheat Flour;중력분|All-Purpose Flour;쌀가루|Rice Flour;찹쌀가루|Glutinous Rice Flour;쌀|Rice;현미|Brown Rice;옥수수|Corn;옥수수전분|Corn Starch;전분|Starch;감자전분|Potato Starch;타피오카전분|Tapioca Starch;변성전분|Modified Starch;귀리|Oats;보리|Barley;호밀|Rye;메밀|Buckwheat;글루텐|Gluten;빵가루|Bread Crumbs;
 우유|Milk;전지분유|Whole Milk Powder;탈지분유|Skim Milk Powder;분유|Milk Powder;생크림|Fresh Cream;크림|Cream;크림치즈|Cream Cheese;치즈|Cheese;모짜렐라치즈|Mozzarella Cheese;체다치즈|Cheddar Cheese;버터|Butter;유청|Whey;유청단백|Whey Protein;발효유|Fermented Milk;연유|Condensed Milk;카제인|Casein;유당|Lactose;
@@ -376,8 +455,8 @@ function pick(f){
     });
     if(mx<0)throw new Error('읽을 수 있는 데이터가 없어요.');
     wb=candidate;
-    $('sheet').innerHTML=wb.SheetNames.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
-    $('sheet').value=best; loadSheet();
+    $('sheet').innerHTML=wb.SheetNames.map((n,i)=>{const rf=wb.Sheets[n]['!ref'];const rc=rf?XLSX.utils.decode_range(rf).e.r+1:0;return `<option value="${esc(n)}">${i+1}번째 시트 · ${esc(n)} (${rc}행)</option>`;}).join('');
+    $('sheet').value=best;$('sheetCnt').textContent='총 '+wb.SheetNames.length+'개 중 고르기';$('sheetBox').classList.remove('hide');loadSheet();
   }).catch(e=>alert(e&&e.message?e.message:'파일을 읽지 못했어요. 엑셀(.xlsx, .xls)이나 CSV 파일인지 확인해 주세요.'));
 }
 function loadSheet(){if(!wb||!wb.Sheets[$('sheet').value])return;setRows(XLSX.utils.sheet_to_json(wb.Sheets[$('sheet').value],{header:1,defval:''}));}
@@ -387,7 +466,7 @@ $('file').onchange=e=>{const f=e.target.files[0];if(f)pick(f);e.target.value='';
 ['dragover','dragenter'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.add('on');}));
 ['dragleave','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.remove('on');}));
 $('drop').addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)pick(f);});
-$('paste').oninput=()=>{const t=$('paste').value;if(t.trim())setRows(t.split(/\r?\n/).map(l=>l.split('\t')));};
+$('paste').oninput=()=>{const t=$('paste').value;if(t.trim()){$('sheetBox').classList.add('hide');setRows(t.split(/\r?\n/).map(l=>l.split('\t')));}};
 
 function setRows(r){
   if(!Array.isArray(r)||r.length>MAX_ROWS||r.some(x=>Array.isArray(x)&&x.length>MAX_COLS)){
@@ -418,6 +497,7 @@ function setRows(r){
   if(cols.n<0&&cols.e<0) cols.n=0;
   const opt='<option value="-1">(없음)</option>'+h.map((c,i)=>`<option value="${i}">${esc(c||'열 '+(i+1))}</option>`).join('');
   [['cN','n'],['cE','e'],['cR','r'],['cS','s'],['cO','o'],['cU','u']].forEach(([id,k])=>{$(id).innerHTML=opt;$(id).value=cols[k];});
+  showColumnRecognition(h);
   build();
 }
 [['cN','n'],['cE','e'],['cR','r'],['cS','s'],['cO','o'],['cU','u']].forEach(([id,k])=>$(id).onchange=()=>{cols[k]=+$(id).value;build();});
@@ -435,12 +515,13 @@ function build(){
     const nutv={};Object.keys(cols.nut).forEach(k=>{const ix=cols.nut[k];if(ix>=0&&String(r[ix]).trim()!==''){const x=num(r[ix]);if(!isNaN(x))nutv[k]=x;}});
     items.push({ko,en,v:isNaN(v)?0:v,s:g(r,cols.s),o:g(r,cols.o),u:g(r,cols.u),nut:nutv,on:true,auto:false});
   });
-  if(!items.length){alert('원재료 이름을 찾지 못했어요. 왼쪽 “이름이나 비율이 엉뚱하게 잡혔나요?”에서 열을 골라 주세요.');return;}
+  if(!items.length){alert('원재료 이름을 찾지 못했어요. “열이 잘못 잡혔나요?”에서 열을 골라 주세요.');return;}
   const sum=items.filter(i=>i.on).reduce((s,i)=>s+i.v,0);
   if(cols.r>=0&&sum>0.9&&sum<=1.1){items.forEach(i=>i.v=Math.round(i.v*1e8)/1e6);scaled=true;}
   $('empty').classList.add('hide'); $('res').classList.remove('hide');
   if(typeof applyMeta==='function') applyMeta();
   render();
+  refreshQualityTools();
 }
 
 function cleanFlavorCode(s){
@@ -457,6 +538,7 @@ function tr1(t,d){
 }
 function translatePhrase(t,d){
   t=cleanFlavorCode(t).trim();
+  t=t.replace(/([가-힣])(\d[\d.]*\s*%)/g,'$1 $2').replace(/(\d\s*%)([가-힣])/g,'$1 $2');
   if(d[t]) return d[t];
   return t.split(/([,·\/;\s]+)/).map(p=>{
     if(!p || /^[,·\/;\s]+$/.test(p)) return p;
@@ -467,7 +549,7 @@ function translatePhrase(t,d){
   }).join('');
 }
 const trs=(s,d)=>cleanFlavorCode(s).split(/([,·\/;])/).map(p=>/^[,·\/;]$/.test(p)?p+(p===','?' ':''):tr1(p.trim(),d)).join('').replace(/,\s+,/g,', ');
-function ingredientEnglish(i,d){let nm=i.en?cleanFlavorCode(i.en):tr1(i.ko,d);if(i.en&&i.ko&&!/\([^)]*[A-Za-z][^)]*\)/.test(nm)){const m=cleanFlavorCode(i.ko).match(/\(([^()]*)\)/);if(m&&/[가-힣]/.test(m[1]))nm+=` (${tr1(m[1],d)})`;}return $('cap').checked?cap(nm):nm;}
+function ingredientEnglish(i,d){let nm=i.en?cleanFlavorCode(i.en):tr1(i.ko,d);const km=cleanFlavorCode(i.ko).match(/\(([^()]*)\)/);if(i.ko&&km&&/[가-힣]/.test(km[1])){const translated=tr1(km[1],d);if(translated&&!/\([^)]*\b(Solids Content|Solids|Milk Solids|Milk Fat)\b[^)]*\)/i.test(nm)){nm=nm.replace(/\s*\([^()]*\)\s*$/,'');nm+=` (${translated})`;}}return $('cap').checked?cap(nm):nm;}
 const cap=s=>s.split(/(\s+)/).map((w,k)=>/^[a-z]/.test(w)&&(k===0||!/^(and|of|with|in|the|a|an|to|for)$/.test(w))?w[0].toUpperCase()+w.slice(1):w).join('');
 const jo=(w,a,b)=>{const c=w.charCodeAt(w.length-1)-44032;return(c>=0&&c<11172&&c%28!==0)?a:b;};
 
@@ -519,7 +601,7 @@ function render(){
   document.querySelectorAll('.rawword').forEach(c=>c.onchange=()=>{const input=[...document.querySelectorAll('.ui')].find(x=>x.dataset.w===c.dataset.w);if(input)input.disabled=c.checked;});
   $('trMsg').textContent=unk.length?`영어를 모르는 단어 ${unk.length}개는 [ ]로 표시했어요. 아래에 적고 저장하면 다음부터 자동으로 들어가요.`:'어색한 표현은 위 칸에서 바로 고칠 수 있어요. (옵션을 바꾸면 다시 만들어져요)';
   const t=Math.round(total*100)/100;
-  $('note').innerHTML=`재료 ${on.length}개`+(cols.r>=0?` · 배합비 합계 ${t}%`+(Math.abs(t-100)>0.5?' <span class="warn">(100%가 아니에요. 엑셀 값을 확인해 주세요)</span>':'')+(scaled?' · 비율이 소수로 적혀 있어서 %로 바꿨어요':''):' · 배합비 열이 없어서 엑셀에 적힌 순서대로 만들었어요');
+  const dupMap={};on.forEach(i=>{const key=(i.ko||i.en).trim().toLowerCase();if(key)dupMap[key]=(dupMap[key]||0)+1;});const dups=Object.keys(dupMap).filter(k=>dupMap[k]>1);const odd=on.filter(i=>cols.r>=0&&(!Number.isFinite(i.v)||i.v<0||i.v>100));$('note').innerHTML=`재료 ${on.length}개`+(cols.r>=0?` · 배합비 합계 ${t}%`+(Math.abs(t-100)>0.5?' <span class="warn">(100%가 아니에요. 엑셀 값을 확인해 주세요)</span>':'')+(scaled?' · 비율이 소수로 적혀 있어서 %로 바꿨어요':''):' · 배합비 열이 없어서 엑셀에 적힌 순서대로 만들었어요')+(dups.length?`<br><span class="warn">중복 가능성 있는 원재료명: ${dups.map(esc).join(', ')} — 실제 중복 원료인지 확인해 주세요.</span>`:'')+(odd.length?`<br><span class="warn">배합비가 0~100% 범위를 벗어난 행이 ${odd.length}개 있어요. 엑셀 값을 확인해 주세요.</span>`:'');
   $('tbl').innerHTML='<tr><th>포함</th><th>한글</th><th>영문</th><th>배합비(%)</th><th></th></tr>'+items.map((i,k)=>`<tr class="${i.on?'':'off'}"><td><input type="checkbox" data-k="${k}" ${i.on?'checked':''}></td><td>${esc(i.ko||'-')}</td><td>${esc(i.en||'-')}</td><td>${cols.r>=0?Math.round(i.v*100)/100:''}</td><td>${i.auto?'내용량·수율 등이라 뺐어요':''}</td></tr>`).join('');
   document.querySelectorAll('#tbl input').forEach(c=>c.onchange=()=>{items[+c.dataset.k].on=c.checked;render();});
 }
@@ -566,6 +648,32 @@ const NUT=[
  {k:'chol',ko:'콜레스테롤',en:'Cholesterol',u:'mg',dv:300},
  {k:'pro',ko:'단백질',en:'Protein',u:'g',dv:55}];
 $('nIn').innerHTML=NUT.map(d=>`<div><label>${d.ko} (${d.u})${d.opt?' · 없으면 비워 두세요':''}</label><input class="t" type="number" step="any" min="0" id="n_${d.k}"></div>`).join('');
+// 제품 영양성분표 엑셀/CSV 가져오기: 헤더 이름으로 함량과 % 기준치 열을 찾아 기존 입력값에 반영
+$('nutExcelBtn').onclick=()=>$('nutExcelFile').click();
+let nutLastFile=null,nutNames=null;
+async function nutImportRun(f,pick){
+ try{
+  let sheets;
+  if(/\.csv$/i.test(f.name)){nutNames=null;const txt=await f.text();sheets=[txt.split(/\r?\n/).map(l=>l.split(/[\t,]/).map(v=>v.replace(/^\s*"|"\s*$/g,'')))];}
+  else {const buf=await f.arrayBuffer(),book=XLSX.read(buf,{type:'array'});nutNames=book.SheetNames;sheets=book.SheetNames.map(n=>XLSX.utils.sheet_to_json(book.Sheets[n],{header:1,defval:''}));}
+  const aliases={kcal:/열량|에너지|calories|energy/i,na:/나트륨|sodium/i,carb:/탄수화물|carbohydrate/i,sug:/당류|당분|sugars/i,fib:/식이섬유|dietary\s*fiber/i,fat:/^지방$|총지방|total\s*fat|^fat$/i,trans:/트랜스지방|trans\s*fat/i,sat:/포화지방|saturated\s*fat/i,chol:/콜레스테롤|cholesterol/i,pro:/단백질|protein/i};
+  let best=null;
+  for(const [si,grid] of sheets.entries()){if(pick>=0&&si!==pick)continue;for(let ri=0;ri<Math.min(grid.length,30);ri++){const h=(grid[ri]||[]).map(x=>String(x??'').trim());const score=Object.values(aliases).filter(re=>h.some(x=>re.test(x))).length;if(!best||score>best.score)best={grid,ri,h,score,si};}}
+   if(pick<0){const nb=$('nutSheetBox');if(nutNames&&nutNames.length>1){$('nutSheet').innerHTML=nutNames.map((n,i)=>`<option value="${i}">${i+1}번째 시트 · ${esc(n)}</option>`).join('');$('nutSheet').value=best?best.si:0;nb.classList.remove('hide');}else nb.classList.add('hide');}
+  if(!best||best.score<2)throw new Error('영양성분 열 제목을 찾지 못했어요. 열 제목에 열량, 나트륨, 탄수화물, 단백질 등의 이름이 있어야 해요.');
+  const findCol=re=>best.h.findIndex(x=>re.test(x)); let count=0; const dv={};
+  const valueFor=(row,k)=>{let ix=findCol(aliases[k]);if(ix<0)return null;const v=parseFloat(String(row[ix]??'').replace(/,/g,'').replace(/[^0-9.\-]/g,''));return Number.isFinite(v)&&v>=0?v:null;};
+  let row=best.grid.slice(best.ri+1).find(r=>Object.keys(aliases).some(k=>valueFor(r,k)!==null));
+  if(!row)throw new Error('영양성분 함량이 있는 행을 찾지 못했어요.');
+  for(const k of Object.keys(aliases)){const v=valueFor(row,k);if(v!==null){$('n_'+k).value=v;count++;}}
+  for(const k of Object.keys(aliases)){const ix=best.h.findIndex(x=>new RegExp((aliases[k].source)+'[^\\n]*(?:%|기준치|daily value|%dv|%rei|%rni)','i').test(x));if(ix>=0){const v=parseFloat(String(row[ix]??'').replace(/,/g,'').replace(/[^0-9.\-]/g,''));if(Number.isFinite(v)&&v>=0)dv[k]=Math.round(v);}}
+  if(Object.keys(dv).length){importedDV=Object.assign({},importedDV,dv);try{localStorage.setItem('importedNutritionDV',JSON.stringify(importedDV));}catch(ignore){}}
+  calc();$('nutImportMsg').textContent=`가져오기 완료: 함량 ${count}개${Object.keys(dv).length?`, 엑셀의 1일 기준치 비율 ${Object.keys(dv).length}개`:''}. 첫 번째로 확인된 데이터 행을 사용했어요. 내용량 기준과 단위를 확인해 주세요.`;
+ }catch(err){$('nutImportMsg').textContent=err.message||'파일을 읽지 못했어요.';}
+}
+$('nutExcelFile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;nutLastFile=f;nutImportRun(f,-1);});
+$('nutSheet').addEventListener('change',()=>{if(nutLastFile)nutImportRun(nutLastFile,+$('nutSheet').value);});
+
 function rnd(k,v){
   const r1=x=>Math.round(x*10)/10; let s=v,n='';
   if(k==='kcal'){if(v<5){s=0;n='5kcal 미만 → 0';}else{s=Math.round(v/5)*5;n='5kcal 단위로 반올림';}}
@@ -577,6 +685,7 @@ function rnd(k,v){
   return{s,txt:String(s),n};
 }
 let nTxt={ko:'',en:''};
+let importedDV={}; try{importedDV=JSON.parse(localStorage.getItem('importedNutritionDV')||'{}');}catch(e){importedDV={};}
 function calc(){
   autoFill();
   const tot=$('nTot').value,unit=$('nUnit').value,basis=$('nBasis').value,sv=$('nSv').value;
@@ -596,17 +705,16 @@ function calc(){
     if(!Number.isFinite(v)||v<0){miss.push(d.ko+' (0 이상 숫자 필요)');return;}
     const r=rnd(d.k,v),full=r.txt.includes('미만')?r.txt:r.txt+d.u;
     const fullEn=r.txt.includes('미만')?`Less than ${r.txt.replace(' 미만','')}`:r.txt+d.u;
-    rows.push({d,v,r,full,fullEn,pct:d.dv?Math.round(r.s/d.dv*100):null});
+    rows.push({d,v,r,full,fullEn,pct:Object.prototype.hasOwnProperty.call(importedDV,d.k)?importedDV[d.k]:(d.dv?Math.round(r.s/d.dv*100):null)});
   });
   $('nWarn').innerHTML=(miss.length?`<span class="warn">아직 비어 있는 필수 항목: ${miss.join(', ')}</span>`:'')+kcalNote();
-  if(!rows.length){$('nKo').innerHTML='<p class="msg">값을 넣으면 여기에 표가 만들어져요.</p>';$('nEn').innerHTML='';nTxt={ko:'',en:''};$('nChk').innerHTML='';return;}
   const mk=lang=>{
     const K=lang==='ko',t=tot?`${tot}${K?'':' '}${unit}`:'';
     const l2=basis==='total'?(K?'총 내용량당':'Per total contents'):basis==='100'?(K?`100${unit}당`:`Per 100 ${unit}`):(K?`1회 제공량(${sv}${unit})당`:`Per serving (${sv} ${unit})`);
     let lines=[K?`영양정보`:`Nutrition Facts`,t?(K?`총 내용량: ${t}`:`Total contents: ${t}`):'',l2].filter(Boolean);
-    const trs=rows.map(x=>{const nm=K?x.d.ko:x.d.en,shown=K?x.full:x.fullEn,pct=x.pct===null?'':x.pct+'%';lines.push(`${nm} ${shown}${pct?' '+pct:''}`);
-      const major=['kcal','fat','chol','na','carb','pro'].includes(x.d.k);
-      return `<tr class="${major?'major':''}"><td class="item ${x.d.ind?'in':''}">${nm} ${shown}</td><td class="pct">${pct}</td></tr>`;}).join('');
+    const trs=NUT.map(d=>{const x=rows.find(r=>r.d.k===d.k),nm=K?d.ko:d.en,shown=x?(K?x.full:x.fullEn):'—',pct=x&&x.pct!==null?x.pct+'%':'';if(x)lines.push(`${nm} ${shown}${pct?' '+pct:''}`);
+      const major=['kcal','fat','chol','na','carb','pro'].includes(d.k);
+      return `<tr class="${major?'major':''}"><td class="item ${d.ind?'in':''}">${nm} ${shown}</td><td class="pct">${pct||'—'}</td></tr>`;}).join('');
     const fn=K?'*%REI/RNI는 1일 영양성분 기준치에 대한 비율입니다.':'*% Daily Value is the percentage of the daily reference value.';
     lines.push(fn);
     const basisLabel=K?(basis==='sv'?`1회 제공량(${sv}${unit}) 기준`:'1회 제공량 기준'):(basis==='sv'?`Serving size (${sv} ${unit})`:'Serving amount basis');
@@ -1013,15 +1121,19 @@ $('dbF').onchange=e=>{const f=e.target.files[0];if(!f)return;
     nSig=null;compSig=null;fSig=null;calc();if(items.length)render();
   }catch(x){$('dbMsg').textContent=x&&x.message?x.message:'파일을 읽지 못했어요. 이 도구에서 내보낸 JSON인지 확인해 주세요.';}}).catch(()=>{$('dbMsg').textContent='파일을 읽지 못했어요. JSON 파일인지 확인해 주세요.';});e.target.value='';};
 $('pubIn').onclick=()=>$('pubF').click();
-$('pubF').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>30*1024*1024){$('dbMsg').textContent='공공 영양DB 파일이 30MB를 넘어요. 필요한 열만 있는 CSV로 저장해 주세요.';e.target.value='';return;}f.arrayBuffer().then(b=>{
-  const rd=o=>{const w=XLSX.read(b,Object.assign({type:'array'},o));return XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{header:1,defval:''});};
-  let R=rd();if(!R.slice(0,10).some(r=>r.some(c=>/식품명/.test(c))))R=rd({codepage:949});
+let pubBuf=null,pubNames=[];
+function pubShow(idx){$('pubSheet').innerHTML=pubNames.map((n,i)=>`<option value="${i}">${i+1}번째 시트 · ${esc(n)}</option>`).join('');$('pubSheet').value=idx;$('pubSheetBox').classList.toggle('hide',pubNames.length<2);}
+function pubRun(b,idx){try{
+  const rd=o=>{const w=XLSX.read(b,Object.assign({type:'array'},o));pubNames=w.SheetNames;return XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[idx]||w.SheetNames[0]],{header:1,defval:''});};
+  let R=rd();if(!R.slice(0,10).some(r=>r.some(c=>/식품명/.test(c))))R=rd({codepage:949});pubShow(Math.min(idx,pubNames.length-1));
   const hi=R.slice(0,15).findIndex(r=>r.some(c=>/식품명/.test(c)));if(hi<0){$('dbMsg').textContent='“식품명” 열을 찾지 못했어요.';return;}
   const H=R[hi].map(String),ix=re=>H.findIndex(c=>re.test(c));
   const C={n:ix(/식품명/),kcal:ix(/에너지|열량/),pro:ix(/단백질/),fat:ix(/^지방|^총지방/),carb:ix(/탄수화물/),sug:ix(/당류/),fib:ix(/식이섬유/),na:ix(/나트륨/),chol:ix(/콜레스테롤/),sat:ix(/포화/),trans:ix(/트랜스/),k:ix(/칼륨/),ca:ix(/칼슘/),fe:ix(/^철/),vd:ix(/비타민\s*D/i)};
   let c=0;R.slice(hi+1).forEach(r=>{const n=normN(r[C.n]);if(!n)return;const o={};[...Object.keys(Z),...XK].forEach(k=>{if(C[k]>=0){const x=parseFloat(String(r[C[k]]).replace(/[^0-9.\-]/g,''));if(!isNaN(x))o[k]=x;}});if(Object.keys(o).length){PUB[n]=o;c++;}});
   PUBOK=1;try{localStorage.setItem('pubDB',JSON.stringify(PUB));}catch(x){PUBOK=0;}
-  $('dbMsg').textContent=`공공 영양DB ${c}개 식품을 불러왔어요. 이름이 같은 재료는 자동으로 채워지고, 비슷한 이름은 “추천” 버튼이나 아래 검색창으로 찾아요.`+(PUBOK?'':' (파일이 커서 브라우저에 저장하지 못했어요. 이 창을 닫으면 사라지니 다음에 다시 불러와 주세요.)');nSig=null;calc();}).catch(()=>$('dbMsg').textContent='파일을 읽지 못했어요.');e.target.value='';};
+  $('dbMsg').textContent=`공공 영양DB ${c}개 식품을 불러왔어요. 이름이 같은 재료는 자동으로 채워지고, 비슷한 이름은 “추천” 버튼이나 아래 검색창으로 찾아요.`+(PUBOK?'':' (파일이 커서 브라우저에 저장하지 못했어요. 이 창을 닫으면 사라지니 다음에 다시 불러와 주세요.)');nSig=null;calc();}catch(err){$('dbMsg').textContent='파일을 읽지 못했어요.';}}
+$('pubF').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>30*1024*1024){$('dbMsg').textContent='공공 영양DB 파일이 30MB를 넘어요. 필요한 열만 있는 CSV로 저장해 주세요.';e.target.value='';return;}f.arrayBuffer().then(b=>{pubBuf=b;pubNames=[];pubRun(b,0);}).catch(()=>$('dbMsg').textContent='파일을 읽지 못했어요.');e.target.value='';};
+$('pubSheet').addEventListener('change',()=>{if(pubBuf)pubRun(pubBuf,+$('pubSheet').value);});
 
 function judge(k,label,m){if(m===''||isNaN(m))return'';
   if(['carb','fib','pro'].includes(k))return m>=label*0.8?'<span class="okc">적합</span>':'<span class="xc">표시량의 80% 미만</span>';
@@ -1042,7 +1154,7 @@ function claims(rows){
   $('nClaimBody').innerHTML=`<p class="msg">100${U}당 환산: 열량 ${kc===null?'-':Math.round(kc*10)/10}kcal · 당류 ${su===null?'-':Math.round(su*100)/100}g · 나트륨 ${na===null?'-':Math.round(na)}mg · 지방 ${fa===null?'-':Math.round(fa*100)/100}g (${liq?'음료(액체)':'고형'} 기준)</p><p>${L.length?'<b>표시 가능성이 있는 강조표시:</b> '+L.join(', '):'해당하는 강조표시가 없어요.'}</p><p class="msg">참고용이에요. 무당·저당은 대체감미료를 쓰면 영양정보에 감미료 표시가 추가로 필요하고, 비교표시·단백질·식이섬유 강조는 별도 기준이 있어요. 표시 전에 식품등의 표시기준을 확인하세요.</p>`;}
 
 function exportX(){
-  if(!items.length||!lastN.length){alert('원재료명 탭에 엑셀을 넣고, 영양정보 탭에서 값이 계산된 뒤에 저장할 수 있어요.');return;}
+  if(!items.length){alert('먼저 원재료명 탭에서 엑셀 파일을 불러와 주세요.');return;}
   const W=XLSX.utils.book_new(),add=(n,a)=>XLSX.utils.book_append_sheet(W,XLSX.utils.aoa_to_sheet(a),n);
   atxt();
   add('원재료명',[['구분','내용'],['한글',$('ko').value],['English',$('en').value]]);
@@ -1320,10 +1432,10 @@ $('fPng').onclick=()=>{if(!lastF.length)return;const W=380,P=14,F='Helvetica,Ari
   lastF.forEach(r=>{y+=6;g.fillRect(P,y,W-P*2,r.f==='m'&&r===lastF.find(x=>x.f==='m')?7:1);y+=20;const ind=(r.f==='1'||r.f==='1i')?14:r.f==='2'?28:0;g.font=(r.f==='b'?'bold ':'')+'14px '+F;g.fillText(r.f==='b'||r.f==='m'?r.name+' '+r.t:r.l,P+ind,y);if(r.pct!==null){g.font='bold 14px '+F;g.textAlign='right';g.fillText(r.pct+'%',W-P,y);g.textAlign='left';}});
   y+=12;g.fillRect(P,y,W-P*2,1);y+=16;g.font='10px '+F;const fn='* The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.';let cur='';[...fn].forEach(ch=>{if(g.measureText(cur+ch).width>W-P*2){g.fillText(cur,P,y);y+=13;cur='';}cur+=ch;});g.fillText(cur,P,y);
   c.toBlob(b=>dl('NutritionFacts_FDA.png',b));};
-function tab(n){['p1','p2','p3','p4'].forEach((id,i)=>$(id).classList.toggle('hide',i+1!==n));document.querySelectorAll('.tabs button').forEach((b,i)=>b.classList.toggle('on',i+1===n));if(n===2)alg();if(n===3)calc();if(n===4){calc();fda();}}
+function tab(n){['p1','p2','p3','p4','p5'].forEach((id,i)=>$(id).classList.toggle('hide',i+1!==n));document.querySelectorAll('.tabs button').forEach((b,i)=>b.classList.toggle('on',i+1===n));if(n===2)alg();if(n===3)calc();if(n===4){calc();fda();}if(n===5)pkgSyncAll();}
 document.querySelectorAll('#p4 > .side input,#p4 > .side select').forEach(e=>{e.oninput=fdaOut;e.onchange=fdaOut;});
 
-const INTRO={1:'엑셀 파일 하나만 넣으면 라벨 뒷면에 쓸 한글·영어 원재료명이 만들어져요.',2:'원재료 이름을 보고 알레르기 유발물질을 자동으로 체크했어요. 맞는지만 확인하세요.',3:'영양성분 값을 넣으면 규정에 맞게 반올림하고 1일 기준치 %까지 계산해서 한국 영양정보 표로 만들어요.',4:'미국에 수출할 때 쓰는 Nutrition Facts 표예요. 영양정보 탭에 넣은 값과 설정을 이어서 써요.'};
+const INTRO={1:'엑셀 파일 하나만 넣으면 라벨 뒷면에 쓸 한글·영어 원재료명이 만들어져요.',2:'원재료 이름을 보고 알레르기 유발물질을 자동으로 체크했어요. 맞는지만 확인하세요.',3:'영양성분 값을 넣으면 규정에 맞게 반올림하고 1일 기준치 %까지 계산해서 한국 영양정보 표로 만들어요.',4:'미국에 수출할 때 쓰는 Nutrition Facts 표예요. 영양정보 탭에 넣은 값과 설정을 이어서 써요.',5:'제품 정보를 정리해 국내·미국·EU 패키지 표시사항 초안을 만들어요. 최종 인쇄 전 규정 검토가 필요해요.'};
 const _tab=tab;
 tab=function(n){_tab(n);$('intro').textContent=INTRO[n];if(window.scrollY>160)window.scrollTo({top:0,behavior:'smooth'});};
 $('intro').textContent=INTRO[1];
@@ -1334,6 +1446,87 @@ const POLY=/락티톨|만니톨|말티톨|소비톨|소르비톨|에리스리톨
 const _rdr=render;
 render=function(){_rdr();const on=items.filter(i=>i.on),s=on.reduce((a,i)=>a+i.v,0),p=on.filter(i=>POLY.test((i.ko||'')+' '+(i.en||''))).reduce((a,i)=>a+i.v,0),el=$('note');
   if(el&&cols.r>=0&&s>0&&p/s>=0.1)el.innerHTML+=` <span class="warn">· 당알코올류가 배합비의 약 ${Math.round(p/s*1000)/10}%예요. 10% 이상이면 “과량 섭취 시 설사를 일으킬 수 있습니다” 같은 주의문구가 필요해요(2026.1.1 시행 표시 규정). 식약처 기준을 꼭 확인하세요.</span>`;};
+const _qualityRender=render;render=function(){_qualityRender();refreshQualityTools();};
+
+// 추가 도구: 열 인식 상태, 원재료 검증, 국가별 초안 출력, CSV 내보내기
+function showColumnRecognition(headers){
+ const el=$('columnRecognition'); if(!el)return;
+ const names=[['원재료명',cols.n],['영문명',cols.e],['배합비/함량',cols.r],['세부원료',cols.s],['원산지',cols.o],['용도',cols.u]];
+ el.textContent='자동 인식 열: '+names.map(([n,i])=>n+' = '+(i>=0?(headers[i]||('열 '+(i+1))):'미인식')).join(' · ');
+}
+function refreshQualityTools(){
+ const v=$('validationResult'),p=$('countryPreview'); if(!v||!p)return;
+ if(!items.length){v.textContent='엑셀을 불러오면 검증 결과가 표시돼요.';p.textContent='';return;}
+ const on=items.filter(i=>i.on),issues=[],warnings=[];
+ const vals=on.map(i=>i.v).filter(Number.isFinite),sum=vals.reduce((a,b)=>a+b,0);
+ if(cols.r>=0){if(on.some(i=>!Number.isFinite(i.v)||i.v<0))issues.push('배합비에 음수 또는 숫자가 아닌 값이 있어요.');if(on.some(i=>i.v>100))issues.push('100%를 초과하는 배합비가 있어요.');if(sum>0&&Math.abs(sum-100)>1&&Math.abs(sum-1)>0.01)warnings.push('선택한 원재료 배합비 합계가 '+(Math.round(sum*100)/100)+'%예요. 합계가 100%인지 확인하세요.');}
+ const seen=new Set(),dups=new Set();on.forEach(i=>{const k=(i.ko||i.en||'').trim().toLowerCase();if(k&&seen.has(k))dups.add(k);seen.add(k);});if(dups.size)warnings.push('중복 가능 원재료명: '+[...dups].join(', '));
+ const noEn=on.filter(i=>i.ko&&!i.en);if(noEn.length)warnings.push('영문명이 없는 원재료 '+noEn.length+'개가 있어요.');
+ if(!on.length)issues.push('선택된 원재료가 없어요.');
+ v.innerHTML=(issues.length?'<b>확인 필요</b><ul>'+issues.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<b>치명적인 입력 오류는 발견되지 않았어요.</b>')+(warnings.length?'<ul>'+warnings.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<p>추가 경고가 없어요.</p>')+'<p class="msg">자동 검사는 입력값의 형식과 일관성만 확인하며, 법적 표시 적합성을 보증하지 않아요.</p>';
+ const c=$('labelCountry').value,ko=$('ko').value.trim(),en=$('en').value.trim(),ak=$('aKo').value.trim(),ae=$('aEn').value.trim();
+ let out='';
+ if(c==='kr')out='[한국 표시용 초안]\n원재료명: '+(ko||'—')+'\n알레르기: '+(ak||'—');
+ else if(c==='us')out='[U.S. EXPORT DRAFT — review required]\nIngredients: '+(en||'—')+'\nContains: '+(ae||'—')+'\n\nCheck U.S. ingredient naming, major allergen declarations, descending order, and applicable FDA requirements before use.';
+ else out='[EU EXPORT DRAFT — review required]\nIngredients: '+(en||'—')+'\nAllergen information: '+(ae||'—')+'\n\nCheck EU ingredient and allergen emphasis requirements, language requirements, and applicable rules before use.';
+ p.textContent=out;{const qs=$('qtSum');if(qs)qs.textContent=issues.length?'· 확인 필요 '+issues.length+'건':warnings.length?'· 주의 '+warnings.length+'건':'· 이상 없음';}
+}
+function saveIngredientCSV(){
+ if(!items.length){alert('먼저 엑셀 파일을 불러와 주세요.');return;}
+ const data=[['원재료명','영문명','배합비(%)','세부원재료','원산지','용도','포함 여부'],...items.map(i=>[i.ko,i.en,i.v,i.s,i.o,i.u,i.on?'Y':'N'])];
+ const csv='\ufeff'+data.map(row=>row.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='원재료명_검토결과.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+$('labelCountry').addEventListener('change',refreshQualityTools);
+$('sortDesc').onclick=()=>{$('sort').checked=true;render();refreshQualityTools();};
+$('sortOriginal').onclick=()=>{$('sort').checked=false;render();refreshQualityTools();};
+$('copyCountry').onclick=async()=>{try{await navigator.clipboard.writeText($('countryPreview').textContent);$('copyCountry').textContent='복사 완료 ✓';setTimeout(()=>$('copyCountry').textContent='표시 문구 복사',1200);}catch(e){alert('복사할 수 없어요. 문구를 선택해 직접 복사해 주세요.');}};
+$('exportCsv').onclick=saveIngredientCSV;
+['ko','en','aKo','aEn'].forEach(id=>$(id).addEventListener('input',refreshQualityTools));
+// 엑셀 열 자동 인식 결과를 화면에 보여줌
+
+
+// 패키지 표시사항 작성: 기존 원재료명·알레르기 문구를 재사용하고, 국가별 검토 초안을 생성
+function pkgVal(id){return ($(id)?.value||'').trim();}
+function pkgSet(id,val){const el=$(id);if(el&&!el.value.trim())el.value=val||'';}
+function pkgSyncAll(){pkgSet('pkgIngredientsKo',pkgVal('ko'));pkgSet('pkgIngredientsEn',pkgVal('en'));pkgSet('pkgAllergenKo',pkgVal('aKo'));pkgSet('pkgAllergenEn',pkgVal('aEn'));}
+$('pkgSyncKo').onclick=()=>{$('pkgIngredientsKo').value=pkgVal('ko');};
+$('pkgSyncEn').onclick=()=>{$('pkgIngredientsEn').value=pkgVal('en');};
+$('pkgSyncAKo').onclick=()=>{$('pkgAllergenKo').value=pkgVal('aKo');};
+$('pkgSyncAEn').onclick=()=>{$('pkgAllergenEn').value=pkgVal('aEn');};
+$('pkgRefresh').onclick=()=>{pkgSyncAll();pkgGenerate();};
+function pkgGenerate(){
+ const nameKo=pkgVal('pkgNameKo'),nameEn=pkgVal('pkgNameEn'),type=pkgVal('pkgType'),net=pkgVal('pkgNet'),maker=pkgVal('pkgMaker'),dist=pkgVal('pkgDistributor'),storage=pkgVal('pkgStorage'),date=pkgVal('pkgDate'),material=pkgVal('pkgMaterial'),report=pkgVal('pkgReport'),contact=pkgVal('pkgContact'),origin=pkgVal('pkgOrigin');
+ const ik=pkgVal('pkgIngredientsKo')||'미입력 — 원재료명 확인 필요',ie=pkgVal('pkgIngredientsEn')||'Not entered — ingredient statement needs review',ak=pkgVal('pkgAllergenKo'),ae=pkgVal('pkgAllergenEn');
+ const commonKR=[nameKo&&'제품명: '+nameKo,type&&'식품유형: '+type,net&&'내용량: '+net,ik&&'원재료명: '+ik,ak&&'알레르기 유발물질: '+ak,maker&&'제조업소: '+maker,dist&&'유통전문판매원: '+dist,origin&&'원산지: '+origin,storage&&'보관방법: '+storage,date&&'날짜 표시: '+date,material&&'포장재질: '+material,report&&'품목보고번호: '+report,contact&&'고객상담: '+contact].filter(Boolean);
+ const us=[nameEn&&'Product name: '+nameEn,net&&'Net quantity: '+net,ie&&'Ingredients: '+ie,ae&&'Allergen declaration: '+ae,maker&&'Manufacturer / address (verify U.S. importer and responsible-party requirements): '+maker,storage&&'Storage: '+storage,origin&&'Country of origin (if required): '+origin].filter(Boolean);
+ const eu=[nameEn&&'Name of the food: '+nameEn,net&&'Net quantity: '+net,ie&&'Ingredients: '+ie,ae&&'Allergen information / emphasis: '+ae,maker&&'Food business operator details (verify EU responsible-operator requirements): '+maker,storage&&'Storage conditions: '+storage,date&&'Date marking: '+date,origin&&'Origin / provenance (if required): '+origin].filter(Boolean);
+ $('pkgOutKR').value=$('pkgUseKR').checked?('[국내용 표시사항 초안 — 최종 검토 필요]\n'+(commonKR.join('\n')||'입력 정보가 없습니다.')):'';
+ $('pkgOutUS').value=$('pkgUseUS').checked?('[U.S. EXPORT LABEL DRAFT — REGULATORY REVIEW REQUIRED]\n'+(us.join('\n')||'No information entered.')+'\n\nReview before printing: FDA product identity and statement of identity, ingredient names and descending order by weight, major allergen declaration, Nutrition Facts and serving size, net quantity format, responsible business/importer details, claims, and applicable product-specific rules.') : '';
+ $('pkgOutEU').value=$('pkgUseEU').checked?('[EU EXPORT LABEL DRAFT — REGULATORY REVIEW REQUIRED]\n'+(eu.join('\n')||'No information entered.')+'\n\nReview before printing: required language(s) for destination member state, ingredient list and emphasized allergens, nutrition declaration, food business operator details, date marking, storage/use instructions, net quantity, origin where required, and product-specific rules.') : '';
+ const missing=[];if(!nameKo)missing.push('국문 제품명');if(!nameEn)missing.push('영문 제품명');if(!net)missing.push('내용량');if(!ik||ik.startsWith('미입력'))missing.push('국문 원재료명');if(!ie||ie.startsWith('Not entered'))missing.push('영문 원재료명');if(!maker)missing.push('제조업소·소재지');if(!storage)missing.push('보관방법 적용 여부 확인');if(!date)missing.push('날짜 표시 방식 확인');if(!ak&&!ae)missing.push('알레르기 표시 여부 확인');
+ const checks=['제품명·식품유형·내용량이 실제 제품 사양과 일치하는지 확인','원재료 순서·복합원재료·첨가물 명칭을 배합표 및 공급사 규격서와 대조','알레르기 교차접촉 및 국가별 표시 규칙 확인','영양성분은 검증된 분석값 또는 승인된 계산값과 대조','제품 유형과 판매국가에 적용되는 법정 표시사항 확인','번역, 단위, 날짜 형식, 글자 크기 및 실제 패키지 공간 확인'];
+ $('pkgChecks').innerHTML=(missing.length?'<b>입력 누락 또는 확인할 정보</b><ul>'+missing.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<b>기본 입력 항목은 모두 채워졌어요.</b>')+'<b>인쇄 전 확인</b><ul>'+checks.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><p class="msg">이 체크리스트는 법률 자문이나 규정 적합성 판정이 아니며, 빈칸이 없더라도 표시 적합성이 보장되지는 않아요.</p>';
+}
+$('pkgGenerate').onclick=pkgGenerate;
+async function pkgCopy(id){try{await navigator.clipboard.writeText($(id).value);alert('복사했어요.');}catch(e){$(id).focus();$(id).select();alert('문안을 선택했어요. Ctrl+C로 복사해 주세요.');}}
+$('pkgCopyKR').onclick=()=>pkgCopy('pkgOutKR');$('pkgCopyUS').onclick=()=>pkgCopy('pkgOutUS');$('pkgCopyEU').onclick=()=>pkgCopy('pkgOutEU');
+$('pkgExport').onclick=()=>{pkgGenerate();const txt=['[국내용]\n'+pkgVal('pkgOutKR'),'[미국용]\n'+pkgVal('pkgOutUS'),'[EU용]\n'+pkgVal('pkgOutEU'),'\n※ 자동 생성 초안이며, 인쇄 전 해당 국가의 최신 규정 및 제품별 요건 검토가 필요합니다.'].join('\n\n');const blob=new Blob(['\ufeff'+txt],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='패키지_표시사항_초안.txt';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);};
+['pkgNameKo','pkgNameEn','pkgType','pkgNet','pkgMaker','pkgDistributor','pkgStorage','pkgDate','pkgMaterial','pkgReport','pkgContact','pkgOrigin','pkgIngredientsKo','pkgIngredientsEn','pkgAllergenKo','pkgAllergenEn'].forEach(id=>{const el=$(id);if(el)el.addEventListener('input',()=>{try{const d=JSON.parse(localStorage.getItem('pkgLabelDraftV1')||'{}');d[id]=el.value;localStorage.setItem('pkgLabelDraftV1',JSON.stringify(d));}catch(e){}});});
+(function(){try{const d=JSON.parse(localStorage.getItem('pkgLabelDraftV1')||'{}');Object.keys(d).forEach(id=>{if($(id))$(id).value=d[id];});}catch(e){};})();
+
+// 현재 작업 입력값을 브라우저에 자동 저장해 새로 열어도 복구
+(function(){
+ const ids=['ko','en','aKo','aEn','nTot','nUnit','nBasis','nSv','nYield','nDens','nAuto','sort','alg','cap','pct','org'];
+ const key='ingredientConverterDraftV1';
+ try{const saved=JSON.parse(localStorage.getItem(key)||'{}');for(const id of ids){const el=$(id);if(el&&saved[id]!==undefined){if(el.type==='checkbox')el.checked=!!saved[id];else el.value=saved[id];}}}catch(e){}
+ let timer;function save(){clearTimeout(timer);timer=setTimeout(()=>{const data={};for(const id of ids){const el=$(id);if(el)data[id]=el.type==='checkbox'?el.checked:el.value;}document.querySelectorAll('#nIn input').forEach(el=>data[el.id]=el.value);try{localStorage.setItem(key,JSON.stringify(data));}catch(e){}},250);}
+ ids.forEach(id=>{const el=$(id);if(el){el.addEventListener('input',save);el.addEventListener('change',save);}});
+ document.querySelectorAll('#nIn input').forEach(el=>{el.addEventListener('input',save);el.addEventListener('change',save);});
+})();
+
+/* 주소 뒤에 #edit 를 붙이면 모든 탭 표시 */
+(function(){const f=()=>{const on=location.hash==='#edit';document.documentElement.classList.toggle('edit',on);if(!on)tab(1);};window.addEventListener('hashchange',f);f();})();
 </script>
 </body>
 </html>
