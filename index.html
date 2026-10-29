@@ -236,6 +236,7 @@ html:not(.edit) #goAl{display:none}
 <section><h2>엑셀 파일 넣기</h2>
 <div id="drop" class="drop"><b>엑셀 파일 고르기</b><br><span>여기를 누르거나, 파일을 이 칸으로 끌어다 놓으세요<br>.xlsx · .xls · .csv 파일이 가능해요</span><input type="file" id="file" accept=".xlsx,.xls,.csv" hidden></div>
 <div id="sheetBox" class="hide"><label for="sheet">사용할 시트 <small class="h" id="sheetCnt"></small></label><select id="sheet"></select></div>
+<div id="tableBox" class="hide"><label for="tableSelect">같은 시트 안의 표 선택 <small class="h" id="tableCnt"></small></label><select id="tableSelect"></select><p class="msg">한 시트에 표가 여러 개 있으면 표를 각각 선택해 처리할 수 있어요.</p></div>
 <details><summary>엑셀에서 복사해서 붙여넣기</summary><p class="msg">엑셀에서 표를 드래그로 선택 → Ctrl+C → 아래 칸을 누르고 Ctrl+V</p><textarea id="paste" style="min-height:90px"></textarea></details></section>
 <details class="opts"><summary>옵션 바꾸기 <small class="h">정렬·알레르기·대문자 등 · 그대로 두어도 돼요</small></summary>
 <label class="chk"><input type="checkbox" id="sort" checked>배합비 많은 순으로 정렬</label>
@@ -459,7 +460,42 @@ function pick(f){
     $('sheet').value=best;$('sheetCnt').textContent='총 '+wb.SheetNames.length+'개 중 고르기';$('sheetBox').classList.remove('hide');loadSheet();
   }).catch(e=>alert(e&&e.message?e.message:'파일을 읽지 못했어요. 엑셀(.xlsx, .xls)이나 CSV 파일인지 확인해 주세요.'));
 }
-function loadSheet(){if(!wb||!wb.Sheets[$('sheet').value])return;setRows(XLSX.utils.sheet_to_json(wb.Sheets[$('sheet').value],{header:1,defval:''}));}
+let sheetTables=[];
+function detectTables(allRows){
+  const key=/원재료|원료|품명|재료|영문|english|배합|비율|함량|세부|복합|원산지|용도|ingredient|material/i;
+  const candidates=[];
+  allRows.forEach((r,i)=>{
+    if(!Array.isArray(r))return;
+    const vals=r.map(v=>String(v??'').trim()).filter(Boolean);
+    const score=vals.filter(v=>v.length<40&&key.test(v)).length;
+    const nameHit=vals.some(v=>/원재료명|원료명|재료명|ingredients?|raw materials?/i.test(v));
+    if(score>=2 || (nameHit&&score>=1)) candidates.push({i,score,vals});
+  });
+  // 연속된 행이 모두 헤더로 잡히는 경우, 가장 점수가 높은 행만 남겨 표를 과분할하지 않음
+  const headers=[];
+  candidates.forEach(c=>{const prev=headers[headers.length-1];if(prev&&c.i-prev.i<=1){if(c.score>prev.score)headers[headers.length-1]=c;}else headers.push(c);});
+  return headers.filter((h,j)=>{
+    const end=headers[j+1]?.i??allRows.length;
+    const data=allRows.slice(h.i+1,end).filter(r=>Array.isArray(r)&&r.some(v=>String(v??'').trim()));
+    return data.length>0;
+  }).map((h,j,arr)=>({start:h.i,end:arr[j+1]?.start??allRows.length,label:`표 ${j+1} · ${String((allRows[h.i]||[]).filter(v=>String(v??'').trim()).slice(0,3).join(' / ')).slice(0,55)}`}));
+}
+function loadSheet(){
+  if(!wb||!wb.Sheets[$('sheet').value])return;
+  const all=XLSX.utils.sheet_to_json(wb.Sheets[$('sheet').value],{header:1,defval:''});
+  sheetTables=detectTables(all);
+  $('tableBox').classList.toggle('hide',sheetTables.length<2);
+  $('tableSelect').innerHTML=sheetTables.map((t,i)=>`<option value="${i}">${esc(t.label)}</option>`).join('');
+  $('tableCnt').textContent=sheetTables.length?`총 ${sheetTables.length}개 표 감지`:'표 자동 구분 안 됨';
+  if(sheetTables.length>=2){loadTable(0,all);}else{setRows(all);}
+}
+function loadTable(idx,all){
+  const source=all||XLSX.utils.sheet_to_json(wb.Sheets[$('sheet').value],{header:1,defval:''});
+  const t=sheetTables[idx];if(!t){setRows(source);return;}
+  // 선택한 표의 헤더부터 다음 표의 헤더 직전까지 처리
+  setRows(source.slice(t.start,t.end));
+}
+$('tableSelect').onchange=()=>loadTable(+$('tableSelect').value);
 $('sheet').onchange=loadSheet;
 $('drop').onclick=()=>$('file').click();
 $('file').onchange=e=>{const f=e.target.files[0];if(f)pick(f);e.target.value='';};
